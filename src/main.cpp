@@ -10,6 +10,7 @@
 #include "AudioGeneratorMP3.h"
 #include "AudioGeneratorFLAC.h"
 #include "AudioGeneratorWAV.h"
+#include "AudioGeneratorAAC.h"
 #include "AudioOutput.h"
 #include "ember_logo.h"
 #include "turntable_frames.h"
@@ -87,10 +88,9 @@ static bool needsRedraw = true;
 // a runtime-swappable Theme struct instead, so a future "pick your own colors"
 // tool can swap the whole palette without touching any drawing code -- every
 // COL_* usage site below is unchanged, the macros just resolve through
-// `theme` now. Battery charge level intentionally stays a fixed semantic
-// TFT_* color (it communicates real device state, not aesthetics) -- the
-// visualizer's level tiers, on the other hand, are just palette choices, so
-// they're theme fields like everything else.
+// `theme` now. The battery meter doesn't get its own field -- it draws in
+// COL_VOLUME (see drawBatteryMeter()) so it reads as one calm icon alongside
+// the volume meter instead of a separate color that clashes with the palette.
 struct Theme {
     uint16_t bg, header, headerText, folder, file, selBg, selFg, dim, play;
     uint16_t npText, volumeIcon, progressDot;
@@ -352,7 +352,7 @@ static char curAlbum[96]  = "";
 // across formats; curFormat exists only for the handful of format-specific
 // spots (which concrete class to `new`, and MP3's desync()-based seeking,
 // which the other decoders have no equivalent for).
-enum AudioFormat { FMT_MP3, FMT_FLAC, FMT_WAV };
+enum AudioFormat { FMT_MP3, FMT_FLAC, FMT_WAV, FMT_AAC };
 static AudioFormat        curFormat = FMT_MP3;
 static AudioGenerator     *decoder = nullptr;
 static AudioFileSourceSD  *file = nullptr;
@@ -564,7 +564,7 @@ enum class ImgFmt { NONE, JPEG, PNG, BMP, GIF, QOI };
 
 static M5Canvas *coverSprite = nullptr;
 static bool coverSpriteOk = false;
-static char artCachedFolder[MY_PATH_MAX] = "";
+static char artCachedPath[MY_PATH_MAX] = "";
 static bool artLoaded = false;
 
 // Separate sprite from coverSprite (rather than reusing one buffer for both)
@@ -705,10 +705,15 @@ static void drawArtRegion();   // defined below; blits coverSprite to the screen
 // Called every loop() iteration; only animates (and only touches the
 // turntable sprite) while the turntable placeholder is actually the one
 // showing -- either because there's no real art, or preferTurntable forced it.
+// Also holds on the current frame while playback is paused/stopped, so the
+// "record" stops spinning right when the music does instead of running on
+// its own clock -- `last` is intentionally left untouched while paused, so
+// the animation resumes at the same 160ms cadence rather than jumping ahead.
 static void turntableTick() {
     static unsigned long last = 0;
     if (uiMode != MODE_NOWPLAYING || !turntableSpriteOk) return;
     if (coverHasArt && !preferTurntable) return;
+    if (playState != PLAYING) return;
     unsigned long now = millis();
     if (now - last < 160) return;
     last = now;
@@ -768,7 +773,7 @@ static void boostArtVibrance(uint16_t* buf, int stride, int w, int h) {
 }
 
 // Decode the embedded cover of `path` into coverSprite. Only called when the playing
-// album folder changes (see playQueuePos) -- never on every redraw/track-advance.
+// track changes (see playQueuePos) -- never on every redraw.
 static void loadAlbumArt(const char* path) {
     if (!coverSpriteOk) return;
 
@@ -862,10 +867,11 @@ static bool hasExt(const char* s, const char* ext) {
 static AudioFormat formatForName(const char* nm) {
     if (hasExt(nm, ".flac")) return FMT_FLAC;
     if (hasExt(nm, ".wav") || hasExt(nm, ".wave")) return FMT_WAV;
+    if (hasExt(nm, ".aac")) return FMT_AAC;
     return FMT_MP3;
 }
 static bool isAudioFile(const char* nm) {
-    return hasExt(nm, ".mp3") || hasExt(nm, ".flac") || hasExt(nm, ".wav") || hasExt(nm, ".wave");
+    return hasExt(nm, ".mp3") || hasExt(nm, ".flac") || hasExt(nm, ".wav") || hasExt(nm, ".wave") || hasExt(nm, ".aac");
 }
 static const char* baseName(const char* p) {
     const char* s = strrchr(p, '/');
@@ -1122,6 +1128,7 @@ static void playQueuePos(int pos) {
     switch (curFormat) {
         case FMT_FLAC: decoder = new AudioGeneratorFLAC(); break;
         case FMT_WAV:  decoder = new AudioGeneratorWAV();  break;
+        case FMT_AAC:  decoder = new AudioGeneratorAAC();  break;
         default:       decoder = new AudioGeneratorMP3();  break;
     }
     if (decoder->begin(id3, out)) {
@@ -1139,11 +1146,13 @@ static void playQueuePos(int pos) {
         // nowPlaying above) is what actually displays.
         decoder->loop();
 
-        // Reload art only when the playing folder (album) has changed.
-        if (!artLoaded || strcmp(queueFolder, artCachedFolder) != 0) {
+        // Reload art whenever the playing track has changed -- each track's
+        // own embedded art is used (not shared across a folder), so mixed
+        // playlists with per-track art work as well as single-album folders.
+        if (!artLoaded || strcmp(full, artCachedPath) != 0) {
             loadAlbumArt(full);
-            strncpy(artCachedFolder, queueFolder, MY_PATH_MAX - 1);
-            artCachedFolder[MY_PATH_MAX - 1] = '\0';
+            strncpy(artCachedPath, full, MY_PATH_MAX - 1);
+            artCachedPath[MY_PATH_MAX - 1] = '\0';
             artLoaded = true;
         }
     } else {
@@ -1175,11 +1184,12 @@ static void drawProgressBar();   // defined below, in the Now Playing section
 // resyncs to the next valid frame header on its own -- the same "lost sync"
 // recovery path it already relies on at normal playback start.
 //
-// FLAC and WAV have no equivalent recovery path (FLAC needs frame-aligned
-// sync points it doesn't expose; WAV's internal read buffer/byte-counter
-// would just desync permanently with no way to resync from outside the
-// class), so seeking is MP3-only for now -- seekBy() below no-ops for the
-// other formats rather than corrupting playback.
+// FLAC, WAV, and AAC have no equivalent recovery path (FLAC needs frame-aligned
+// sync points it doesn't expose; WAV's internal read buffer/byte-counter would
+// just desync permanently with no way to resync from outside the class; the
+// Helix AAC decoder has no public desync either), so seeking is MP3-only for
+// now -- seekBy() below no-ops for the other formats rather than corrupting
+// playback.
 static const float SEEK_STEP_PCT = 0.02f;         // ~2% of the file per tap/repeat
 static const uint32_t SEEK_HOLD_DELAY_MS = 350;   // hold this long before repeat-seeking kicks in
 static const uint32_t SEEK_HOLD_REPEAT_MS = 150;  // then repeat this often while still held
@@ -1191,7 +1201,7 @@ static unsigned long lastLeftTapTime = 0, lastRightTapTime = 0;
 static unsigned long rightHoldNext = 0, leftHoldNext = 0;
 
 static void seekBy(int32_t deltaBytes) {
-    if (curFormat != FMT_MP3) return;   // see the note above -- no safe resync for FLAC/WAV
+    if (curFormat != FMT_MP3) return;   // see the note above -- no safe resync for FLAC/WAV/AAC
     if (!file || !decoder || playState == STOPPED) return;
     uint32_t size = file->getSize();
     if (size == 0) return;
@@ -1344,7 +1354,8 @@ static const int NP_TEXT_Y = 22;
 static const int NP_LINE_H = 18;
 
 // ---------- Battery + volume meters (top-right, both screens) ----------
-static const int BATT_W = 20, BATT_H = 10, BATT_NUB_W = 2, BATT_NUB_H = 6, BATT_MARGIN = 4;
+static const int BATT_W = 21, BATT_H = 10, BATT_NUB_W = 2, BATT_NUB_H = 6, BATT_MARGIN = 4;
+static const int BATT_BARS = 5, BATT_BAR_GAP = 1;
 
 static int battIconX() { return M5Cardputer.Display.width() - BATT_MARGIN - BATT_NUB_W - BATT_W; }
 
@@ -1358,7 +1369,15 @@ static uint16_t topStripBg() {
 // Redraws itself against whichever background the active screen already painted
 // (header bar in the browser, plain background on Now Playing), so it must be
 // called after that background is drawn, not before. Icon only -- no percent
-// text, so it doesn't distract from the track info below it.
+// text, so it doesn't distract from the track info below it. Drawn as an
+// outline + up to BATT_BARS filled segments (COL_VOLUME) for the current
+// level -- unfilled segments are just left blank rather than dimmed, so the
+// icon stays a single tone instead of a two-tone gauge.
+//
+// isCharging() reflects the charge-controller's own state machine, which on
+// this board doesn't reliably flip to "charging" even when a cable is in --
+// getVBUSVoltage() (USB power actually present) is used instead, since
+// "plugged in" is the simpler and more honest signal to show.
 static void drawBatteryMeter() {
     auto &d = M5Cardputer.Display;
     uint16_t bg = topStripBg();
@@ -1369,16 +1388,29 @@ static void drawBatteryMeter() {
     d.fillRect(iconX - 1, 0, d.width() - (iconX - 1), ICON_STRIP_H, bg);   // clear stale meter
 
     int lvl = M5Cardputer.Power.getBatteryLevel();   // 0..100, -1 if unknown
-    bool charging = (M5Cardputer.Power.isCharging() == m5::Power_Class::is_charging);
+    bool pluggedIn = M5Cardputer.Power.getVBUSVoltage() > 1000;   // mV; -1 if unsupported
 
-    d.drawRect(iconX, iconY, BATT_W, BATT_H, TFT_WHITE);
-    d.fillRect(iconX + BATT_W, iconY + (BATT_H - BATT_NUB_H) / 2, BATT_NUB_W, BATT_NUB_H, TFT_WHITE);
+    d.drawRect(iconX, iconY, BATT_W, BATT_H, COL_VOLUME);
+    d.fillRect(iconX + BATT_W, iconY + (BATT_H - BATT_NUB_H) / 2, BATT_NUB_W, BATT_NUB_H, COL_VOLUME);
 
-    if (lvl >= 0) {
-        int fillMaxW = BATT_W - 2;
-        int fillW = (fillMaxW * lvl) / 100;
-        uint16_t fillColor = charging ? TFT_CYAN : (lvl <= 20 ? TFT_RED : lvl <= 50 ? TFT_YELLOW : TFT_GREEN);
-        if (fillW > 0) d.fillRect(iconX + 1, iconY + 1, fillW, BATT_H - 2, fillColor);
+    int innerX = iconX + 1, innerY = iconY + 1, innerH = BATT_H - 2;
+    int innerW = BATT_W - 2;
+
+    if (pluggedIn) {
+        // Charging: a plus in place of the level bars -- with isCharging()
+        // unreliable, an exact "how full" read would be misleading anyway,
+        // so this just signals "topping up" instead.
+        int cx = innerX + innerW / 2, cy = innerY + innerH / 2;
+        d.fillRect(cx - 2, cy, 5, 1, COL_VOLUME);
+        d.fillRect(cx, cy - 2, 1, 5, COL_VOLUME);
+    } else {
+        int filled = (lvl >= 0) ? (lvl * BATT_BARS + 50) / 100 : 0;
+        if (filled > BATT_BARS) filled = BATT_BARS; else if (filled < 0) filled = 0;
+        int barW = (innerW - (BATT_BARS - 1) * BATT_BAR_GAP) / BATT_BARS;
+        int pitch = barW + BATT_BAR_GAP;
+        for (int i = 0; i < filled; i++) {
+            d.fillRect(innerX + i * pitch, innerY, barW, innerH, COL_VOLUME);
+        }
     }
 }
 

@@ -254,19 +254,19 @@
   }
   .s-header .s-title{ font-weight:600; letter-spacing:.01em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .s-header .s-icons{ display:flex; gap: 6px; align-items:center; flex:none; }
-  /* Battery is intentionally NOT theme-driven in the firmware (see CLAUDE.md) --
-     always fixed white regardless of theme, so it's drawn that way here too
-     rather than tied to any --p-* variable. */
+  /* Battery draws in --p-volumeIcon (same color as the volume meter) -- outline
+     plus up to 5 filled segments for the level, unfilled segments left blank
+     rather than dimmed, matching the firmware's single-tone icon. */
   .s-header .icon-batt{
-    width: 16px; height: 8px; border: 1.4px solid #fff; border-radius: 1.5px;
-    position: relative; opacity: .85;
+    display:flex; align-items:center; gap:1px; padding:1px;
+    width: 16px; height: 8px; border: 1.4px solid var(--p-volumeIcon); border-radius: 1.5px;
+    position: relative; box-sizing:border-box;
   }
   .s-header .icon-batt::after{
-    content:""; position:absolute; right:-3px; top:1.5px; width:2px; height:3px; background:#fff;
+    content:""; position:absolute; right:-3px; top:1.5px; width:2px; height:3px; background: var(--p-volumeIcon);
   }
-  .s-header .icon-batt::before{
-    content:""; position:absolute; left:1px; top:1px; bottom:1px; width:65%; background:#fff;
-  }
+  .s-header .icon-batt i{ flex:1; align-self:stretch; }
+  .s-header .icon-batt i.lit{ background: var(--p-volumeIcon); }
   .s-list{ flex:1; overflow:hidden; padding: 2% 0; }
   .s-row{
     display:flex; align-items:center; gap: 3%;
@@ -336,13 +336,15 @@
   .np-volbars{ display:flex; gap:2px; margin-left:8px; }
   .np-volbars i{ width:3px; height:10px; background: var(--border); border-radius:.5px; }
   .np-volbars i.lit{ background: var(--p-volumeIcon); }
-  /* Battery: fixed white, not theme-driven -- see the note on .icon-batt above. */
+  /* Battery: same single-tone, segmented icon as .icon-batt above. */
   .np-batt{
-    margin-left:auto; flex:none; width:16px; height:8px;
-    border: 1.4px solid #fff; border-radius: 1.5px; position:relative; opacity:.85;
+    margin-left:auto; flex:none; display:flex; align-items:center; gap:1px; padding:1px;
+    width:16px; height:8px;
+    border: 1.4px solid var(--p-volumeIcon); border-radius: 1.5px; position:relative; box-sizing:border-box;
   }
-  .np-batt::after{ content:""; position:absolute; right:-3px; top:1.5px; width:2px; height:3px; background:#fff; }
-  .np-batt::before{ content:""; position:absolute; left:1px; top:1px; bottom:1px; width:65%; background:#fff; }
+  .np-batt::after{ content:""; position:absolute; right:-3px; top:1.5px; width:2px; height:3px; background: var(--p-volumeIcon); }
+  .np-batt i{ flex:1; align-self:stretch; }
+  .np-batt i.lit{ background: var(--p-volumeIcon); }
 
   .np-artist, .np-title, .np-album{
     position:absolute; left:50%; width:47.5%;
@@ -483,7 +485,7 @@
           <div class="screen" id="screenBrowser">
             <div class="s-header">
               <span class="s-title" id="pHeaderTitle">Boards of Canada</span>
-              <div class="s-icons"><span class="icon-batt"></span></div>
+              <div class="s-icons"><span class="icon-batt"><i class="lit"></i><i class="lit"></i><i class="lit"></i><i></i><i></i></span></div>
             </div>
             <div class="s-list">
               <div class="s-row s-folder"><span class="ficon"></span>Music for the Jilted Generation</div>
@@ -506,7 +508,7 @@
               <span class="np-volbars">
                 <i class="lit"></i><i class="lit"></i><i class="lit"></i><i class="lit"></i><i></i><i></i>
               </span>
-              <span class="np-batt"></span>
+              <span class="np-batt"><i class="lit"></i><i class="lit"></i><i class="lit"></i><i></i><i></i></span>
             </div>
             <div class="np-artist">Boards of Canada</div>
             <div class="np-title">Roygbiv</div>

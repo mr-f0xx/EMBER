@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-☕-orange)](https://buymeacoffee.com/horseyofcoursey)
 
-A themeable MP3 / FLAC / WAV player firmware for the [M5Stack Cardputer ADV](https://shop.m5stack.com/products/m5stack-cardputer-adv-version-esp32-s3) (ESP32-S3). SD-card folder browsing, album art, custom color themes, and a couple of full-screen visualizers.
+A themeable MP3 / FLAC / WAV / AAC player firmware for the [M5Stack Cardputer ADV](https://shop.m5stack.com/products/m5stack-cardputer-adv-version-esp32-s3) (ESP32-S3). SD-card folder browsing, album art, custom color themes, and a couple of full-screen visualizers.
 
 
 <p float="left">
@@ -21,12 +21,13 @@ A themeable MP3 / FLAC / WAV player firmware for the [M5Stack Cardputer ADV](htt
 ## Features
 
 - **Folder browsing** straight off the SD card (Artist → Album → Track), natural-sorted, no library scan/database step.
-- **MP3, FLAC, and WAV** playback.
+- **MP3, FLAC, WAV, and AAC** playback.
 - **Themeable UI** — 6 built-in themes (Ember, 90's Sweater, Aqua, Honey, Moody, Terminal Green), plus a [browser-based theme editor](#custom-themes) for making your own and loading them from the SD card, no recompiling required.
 - **Two full-screen visualizers**: a real FFT spectrum analyzer (bars + peak-hold + waveform overlay + stereo level meter), and a full-screen silhouette dance visualizer that reacts to bass hits in the music.
 - **Now Playing extras**: embedded album art (JPEG/PNG/BMP/QOI), an animated turntable placeholder for tracks with no art, a small amplitude visualizer, seek with double-tap-to-restart/skip, and battery/volume meters.
 - **Settings**: backlight level, screen-off timeout, end-of-album behavior, and theme — all persisted across reboots.
 - **On-device screenshot capture** (see [Screenshots](#taking-your-own-screenshots) below) for pulling real UI captures without photographing the screen.
+- **Multi-language support** displays Latin, Cyrillic, and Chinese characters. 
 
 ## Hardware
 

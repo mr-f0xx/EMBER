@@ -27,7 +27,7 @@ A themeable MP3 / FLAC / WAV / AAC player firmware for the [M5Stack Cardputer AD
 - **Now Playing extras**: embedded album art (JPEG/PNG/BMP/QOI), an animated turntable placeholder for tracks with no art, a small amplitude visualizer, seek with double-tap-to-restart/skip, and battery/volume meters.
 - **Settings**: backlight level, screen-off timeout, end-of-album behavior, and theme — all persisted across reboots.
 - **On-device screenshot capture** (see [Screenshots](#taking-your-own-screenshots) below) for pulling real UI captures without photographing the screen.
-- **Multi-language support** displays Latin, Cyrillic, and Chinese characters. 
+- **Multi-language support** displays Japanese, Chinese, Cyrillic (Russian, etc.), Greek, and accented Latin (French, German, Spanish, etc). 
 
 ## Hardware
 

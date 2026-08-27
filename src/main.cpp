@@ -353,7 +353,7 @@ static UiMode uiModeBeforeSettings = MODE_BROWSER;   // where to return to on ba
 // library) so they survive a reboot -- see loadSettings()/saveSettings() near
 // setup(), below. More settings are expected to be added here over time.
 enum AlbumEndMode { ALBUM_LOOP, ALBUM_STOP, ALBUM_NEXT, ALBUM_END_MODE_COUNT };
-static const char* albumEndLabels[ALBUM_END_MODE_COUNT] = { "Loop album", "Stop", "Next album" };
+static const char* albumEndLabels[ALBUM_END_MODE_COUNT] = { "En boucle", "Arrêt", "Suivant" };
 static AlbumEndMode albumEndMode = ALBUM_STOP;   // default: nothing happens, playback just stops
 
 static const uint8_t  backlightValues[] = { 64, 128, 192, 255 };
@@ -362,7 +362,7 @@ static const int BACKLIGHT_COUNT = sizeof(backlightValues) / sizeof(backlightVal
 static int settingBacklightIdx = BACKLIGHT_COUNT - 1;   // default 100%
 
 static const uint32_t screenOffTimeoutMs[] = { 0, 10000, 30000, 60000 };
-static const char*    screenOffLabels[]    = { "Never", "10 sec", "30 sec", "60 sec" };
+static const char*    screenOffLabels[]    = { "Jamais", "10 s", "30 s", "60 s" };
 static const int SCREEN_OFF_COUNT = sizeof(screenOffTimeoutMs) / sizeof(screenOffTimeoutMs[0]);
 static int settingScreenOffIdx = 2;   // default 30 sec
 
@@ -372,7 +372,7 @@ static int settingThemeIdx = 0;   // default Ember (THEME_LIST[0])
 // (see saveScreenshot()), which most people flashing this will never use,
 // so it shouldn't be live by default just because the 'c' key happens to be
 // otherwise unbound.
-static const char* onOffLabels[] = { "Off", "On" };
+static const char* onOffLabels[] = { "Non", "Oui" };
 static bool settingScreenshotsEnabled = false;
 
 static const int SETTINGS_COUNT = 5;
@@ -1667,7 +1667,7 @@ static void drawBrowserRow(int idx) {
 // bare slash. Kept ASCII-only (no chevron/arrow glyph) since glyph coverage
 // for anything fancier isn't guaranteed across every font a theme might pick.
 static String breadcrumb() {
-    if (depth == 0) return "Library";
+    if (depth == 0) return "Bibliothèque";
     String s(currentPath);
     if (s.startsWith("/")) s.remove(0, 1);
     s.replace("/", "  /  ");
@@ -1687,7 +1687,7 @@ static void drawBrowser() {
     if (entryCount == 0) {
         d.setFont(FONT_BROWSER);
         d.setTextColor(COL_DIM, COL_BG);
-        d.setCursor(4, HEADER_H + 6); d.print("(empty)");
+        d.setCursor(4, HEADER_H + 6); d.print("(vide)");
         return;
     }
     for (int row = 0; row < visibleRows; row++) {
@@ -1706,13 +1706,11 @@ static void drawNowPlaying();   // defined below, in the Now Playing section
 // happening on every single settings keystroke and was audible as a hiccup).
 static void drawSettingsBox() {
     auto &d = M5Cardputer.Display;
-    // FreeSans (FONT_BROWSER) instead of the Gothic fallback font -- every
-    // label/value on this screen is plain ASCII (English words, digits, a
-    // plain apostrophe in theme names like "90's Sweater"), so there's never
-    // a need to fall back, unlike the browser's file/folder names.
-    d.setFont(FONT_BROWSER);
+    // The labels are French now, so accented strings fall back to the Gothic
+    // font via selectBrowserFont() -- the same behavior as the file browser
+    // (FreeSans has no accented glyphs of its own).
 
-    const int titleH = 24;   // fits FreeSans's ~22px line height with a little breathing room
+    const int titleH = 24;   // fits both fonts' line heights with a little breathing room
     const int boxW = d.width() - 40;
     const int boxH = titleH + SETTINGS_VISIBLE * ROW_H + 8;
     const int boxX = (d.width() - boxW) / 2;
@@ -1721,10 +1719,11 @@ static void drawSettingsBox() {
     d.fillRect(boxX, boxY, boxW, boxH, COL_BG);
     d.drawRect(boxX, boxY, boxW, boxH, TFT_WHITE);
     d.setTextColor(COL_FOLDER, COL_BG);
+    selectBrowserFont(d, "Réglages");
     d.setCursor(boxX + 6, boxY + (titleH - d.fontHeight()) / 2);
-    d.print("Settings");
+    d.print("Réglages");
 
-    const char* names[SETTINGS_COUNT]  = { "Backlight", "Screen off", "Album end", "Theme", "Screenshots" };
+    const char* names[SETTINGS_COUNT]  = { "Luminosité", "Veille écran", "Fin d'album", "Thème", "Captures" };
     String values[SETTINGS_COUNT] = {
         backlightLabels[settingBacklightIdx],
         screenOffLabels[settingScreenOffIdx],
@@ -1741,11 +1740,14 @@ static void drawSettingsBox() {
         uint16_t fg = sel ? COL_SEL_FG : COL_FOLDER;
         d.fillRect(boxX + 2, y, boxW - 4, ROW_H, bg);
         d.setTextColor(fg, bg);
+        selectBrowserFont(d, names[i]);
         int textY = y + (ROW_H - d.fontHeight()) / 2;
         d.setCursor(boxX + 6, textY);
         d.print(names[i]);
+        selectBrowserFont(d, values[i].c_str());
         int vw = d.textWidth(values[i].c_str());
-        d.setCursor(boxX + boxW - 6 - vw, textY);
+        int vty = y + (ROW_H - d.fontHeight()) / 2;
+        d.setCursor(boxX + boxW - 6 - vw, vty);
         d.print(values[i]);
     }
 
@@ -2234,7 +2236,7 @@ static void drawNowPlaying() {
 
     d.setTextColor(COL_NP_TEXT, COL_NP_BG);
     d.setCursor(NP_TEXT_X, NP_TEXT_Y);
-    d.print(trimToWidth(d, curArtist[0] ? curArtist : "(unknown artist)", maxW));
+    d.print(trimToWidth(d, curArtist[0] ? curArtist : "(artiste inconnu)", maxW));
 
     const char* title = curTitle[0] ? curTitle : nowPlaying;
     titleScrolling = strlen(title) > MARQUEE_MIN_CHARS;
@@ -2547,7 +2549,7 @@ void setup() {
     if (!ok) ok = SD.begin(SD_CS, SPI, 4000000);
     if (!ok) {
         d.setTextColor(TFT_RED, COL_BG);
-        d.setCursor(4, 4); d.print("SD init FAILED");
+        d.setCursor(4, 4); d.print("Erreur carte SD");
         Serial.println("SD init failed");
         return;
     }

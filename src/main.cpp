@@ -509,16 +509,12 @@ static int settingThemeIdx = 0;   // default Ember (THEME_LIST[0])
 static const char* onOffLabels[] = { "Non", "Oui" };
 static bool settingScreenshotsEnabled = false;
 
-// Cover toggle: hide the album-art box so the rest of the Now Playing UI
-// (text, progress bar, visualizer) spans the full screen width.
-static bool settingShowCover = true;
-
 // Now Playing small-visualizer style.
-enum VisStyle { VIS_BARS_LED, VIS_WAVE, VIS_SPECTRUM, VIS_CHANNELS, VIS_STYLE_COUNT };
-static const char* visStyleLabels[VIS_STYLE_COUNT] = { "Barres", "Vagues", "Spectre", "Canaux" };
+enum VisStyle { VIS_BARS_LED, VIS_WAVE, VIS_SPECTRUM, VIS_CHANNELS, VIS_PEAKS, VIS_PULSE, VIS_MIRROR, VIS_STYLE_COUNT };
+static const char* visStyleLabels[VIS_STYLE_COUNT] = { "Barres", "Vagues", "Spectre", "Canaux", "Pics", "Pulsation", "Miroir" };
 static VisStyle settingVisStyle = VIS_BARS_LED;
 
-static const int SETTINGS_COUNT = 7;
+static const int SETTINGS_COUNT = 6;
 static int settingsCursor = 0;
 
 // Rows visible at once in the settings box -- SETTINGS_COUNT no longer fits
@@ -541,7 +537,6 @@ static void loadSettings() {
     albumEndMode = (AlbumEndMode)settingsPrefs.getInt("albumEnd", ALBUM_STOP);
     settingThemeIdx = settingsPrefs.getInt("themeIdx", 0);
     settingScreenshotsEnabled = settingsPrefs.getBool("screenshots", false);
-    settingShowCover = settingsPrefs.getBool("showCover", true);
     settingVisStyle = (VisStyle)settingsPrefs.getInt("visStyle", 0);
     settingsPrefs.end();
 
@@ -561,18 +556,12 @@ static void saveSettings() {
     settingsPrefs.putInt("albumEnd", (int)albumEndMode);
     settingsPrefs.putInt("themeIdx", settingThemeIdx);
     settingsPrefs.putBool("screenshots", settingScreenshotsEnabled);
-    settingsPrefs.putBool("showCover", settingShowCover);
     settingsPrefs.putInt("visStyle", (int)settingVisStyle);
     settingsPrefs.end();
 }
 
 static bool screenIsOff = false;
 static unsigned long lastInputTime = 0;
-
-// Recomputes the Now Playing layout (text column, progress bar, visualizer
-// sprites) from the current cover setting. Defined below, in the visualizer
-// section, where the sprite state lives.
-static void applyCoverLayout();
 
 // ID3 metadata for the currently playing track (populated via RegisterMetadataCB)
 static char curArtist[96] = "";
@@ -969,7 +958,6 @@ static void drawArtRegion();   // defined below; blits coverSprite to the screen
 // the animation resumes at the same 160ms cadence rather than jumping ahead.
 static void turntableTick() {
     static unsigned long last = 0;
-    if (!settingShowCover) return;   // art box hidden -- nothing to animate
     if (uiMode != MODE_NOWPLAYING || !turntableSpriteOk) return;
     if (coverHasArt && !preferTurntable) return;
     if (playState != PLAYING) return;
@@ -1100,7 +1088,6 @@ static void loadAlbumArt(const char* path) {
 // blits the cached cover (or placeholder); a future audio visualizer can render live
 // here instead, without touching the loading/caching logic above.
 static void drawArtRegion() {
-    if (!settingShowCover) return;   // cover off: full-width text layout
     bool showTurntable = !coverHasArt || preferTurntable;
     if (showTurntable && turntableSpriteOk) turntableSprite->pushSprite(COVER_X, COVER_Y);
     else if (!showTurntable && coverSpriteOk) coverSprite->pushSprite(COVER_X, COVER_Y);
@@ -1616,11 +1603,9 @@ static String trimToWidth(LovyanGFX &d, const String &text, int maxW) {
 // Now Playing text column layout, needed by the volume meter below (it starts
 // directly above the artist text) as well as drawNowPlaying() itself. Fixed
 // independently of COVER_Y/COVER_H so repositioning the art box doesn't move it.
-static int NP_TEXT_X = 120;   // 120 next to the art box, 6 when the cover is hidden (full width)
+static const int NP_TEXT_X = 120;
 static const int NP_TEXT_Y = 22;
 static const int NP_LINE_H = 18;
-// Progress bar geometry (under the art box in cover mode, full width without).
-static int progX = 6, progW = 105;
 
 // ---------- Battery + volume meters (top-right, both screens) ----------
 static const int BATT_W = 21, BATT_H = 10, BATT_NUB_W = 2, BATT_NUB_H = 6, BATT_MARGIN = 4;
@@ -1896,11 +1881,13 @@ static void drawNowPlaying();   // defined below, in the Now Playing section
 // happening on every single settings keystroke and was audible as a hiccup).
 static void drawSettingsBox() {
     auto &d = M5Cardputer.Display;
-    // The labels are French now, so accented strings fall back to the Gothic
-    // font via selectBrowserFont() -- the same behavior as the file browser
-    // (FreeSans has no accented glyphs of its own).
+    // One single font for the whole box (the Gothic UI font): FreeSans has
+    // no accented glyphs and its taller metrics made the ASCII-only labels
+    // render visibly bigger than the accented ones -- mixed sizes looked
+    // broken. FONT_UI covers accents + ASCII at one uniform 16px height.
+    d.setFont(FONT_UI);
 
-    const int titleH = 24;   // fits both fonts' line heights with a little breathing room
+    const int titleH = 24;
     const int boxW = d.width() - 40;
     const int boxH = titleH + SETTINGS_VISIBLE * ROW_H + 8;
     const int boxX = (d.width() - boxW) / 2;
@@ -1909,18 +1896,16 @@ static void drawSettingsBox() {
     d.fillRect(boxX, boxY, boxW, boxH, COL_BG);
     d.drawRect(boxX, boxY, boxW, boxH, TFT_WHITE);
     d.setTextColor(COL_FOLDER, COL_BG);
-    selectBrowserFont(d, "Réglages");
     d.setCursor(boxX + 6, boxY + (titleH - d.fontHeight()) / 2);
     d.print("Réglages");
 
-    const char* names[SETTINGS_COUNT]  = { "Luminosité", "Veille écran", "Fin d'album", "Thème", "Captures", "Pochette", "Visualiseur" };
+    const char* names[SETTINGS_COUNT]  = { "Luminosité", "Veille écran", "Fin d'album", "Thème", "Captures", "Visualiseur" };
     String values[SETTINGS_COUNT] = {
         backlightLabels[settingBacklightIdx],
         screenOffLabels[settingScreenOffIdx],
         albumEndLabels[albumEndMode],
         themeLabelAt(settingThemeIdx),
         onOffLabels[settingScreenshotsEnabled ? 1 : 0],
-        onOffLabels[settingShowCover ? 1 : 0],
         visStyleLabels[settingVisStyle],
     };
     for (int row = 0; row < SETTINGS_VISIBLE; row++) {
@@ -1932,14 +1917,11 @@ static void drawSettingsBox() {
         uint16_t fg = sel ? COL_SEL_FG : COL_FOLDER;
         d.fillRect(boxX + 2, y, boxW - 4, ROW_H, bg);
         d.setTextColor(fg, bg);
-        selectBrowserFont(d, names[i]);
         int textY = y + (ROW_H - d.fontHeight()) / 2;
         d.setCursor(boxX + 6, textY);
         d.print(names[i]);
-        selectBrowserFont(d, values[i].c_str());
         int vw = d.textWidth(values[i].c_str());
-        int vty = y + (ROW_H - d.fontHeight()) / 2;
-        d.setCursor(boxX + boxW - 6 - vw, vty);
+        d.setCursor(boxX + boxW - 6 - vw, textY);
         d.print(values[i]);
     }
 
@@ -2000,14 +1982,6 @@ static void cycleSetting(int idx) {
             settingScreenshotsEnabled = !settingScreenshotsEnabled;
             break;
         case 5:
-            // Cover on/off: the whole Now Playing layout changes, so repaint
-            // the full backdrop via drawSettings() below.
-            settingShowCover = !settingShowCover;
-            applyCoverLayout();
-            saveSettings();
-            drawSettings();
-            return;
-        case 6:
             settingVisStyle = (VisStyle)((settingVisStyle + 1) % VIS_STYLE_COUNT);
             break;
     }
@@ -2095,21 +2069,21 @@ static void drawProgressBar() {
     if (frac > 1.0f) frac = 1.0f;
 
     int lineY = PROG_DOT_R + 1;   // local y within the sprite/clear-rect
-    int dotX = (int)(frac * progW);
+    int dotX = (int)(frac * COVER_W);
 
     if (progSpriteOk) {
         progSprite->fillSprite(COL_NP_BG);
-        progSprite->drawFastHLine(0, lineY, progW, COL_DIM);
+        progSprite->drawFastHLine(0, lineY, COVER_W, COL_DIM);
         progSprite->fillCircle(dotX, lineY, PROG_DOT_R, COL_PROGRESS);
-        progSprite->pushSprite(progX, PROG_Y - PROG_DOT_R - 1);
+        progSprite->pushSprite(COVER_X, PROG_Y - PROG_DOT_R - 1);
         return;
     }
 
     // Fallback if the sprite couldn't be allocated -- same visual, may flicker.
     auto &d = M5Cardputer.Display;
-    d.fillRect(progX, PROG_Y - PROG_DOT_R - 1, progW, PROG_SPRITE_H, COL_NP_BG);
-    d.drawFastHLine(progX, PROG_Y, progW, COL_DIM);
-    d.fillCircle(progX + dotX, PROG_Y, PROG_DOT_R, COL_PROGRESS);
+    d.fillRect(COVER_X, PROG_Y - PROG_DOT_R - 1, COVER_W, PROG_SPRITE_H, COL_NP_BG);
+    d.drawFastHLine(COVER_X, PROG_Y, COVER_W, COL_DIM);
+    d.fillCircle(COVER_X + dotX, PROG_Y, PROG_DOT_R, COL_PROGRESS);
 }
 
 // Amplitude-history visualizer, bottom-right. Composited into a small sprite
@@ -2121,42 +2095,6 @@ static int VIS_BAR_W = 5;   // computed in setup() so the row spans NP_TEXT_X..w
 static M5Canvas *visSprite = nullptr;
 static bool visSpriteOk = false;
 static int visLeft = 0, visTop = 0;
-
-// Recomputes the Now Playing layout from the cover setting: text column
-// position, progress bar geometry, and the visualizer strip. The two sprites
-// are sized at creation, so a geometry change recreates them (only happens
-// on a Settings change or at boot -- never during playback).
-static void applyCoverLayout() {
-    auto &d = M5Cardputer.Display;
-    NP_TEXT_X = settingShowCover ? 120 : 6;
-    progX = settingShowCover ? COVER_X : 6;
-    progW = settingShowCover ? COVER_W : (d.width() - 12);
-
-    if (visSprite)  { delete visSprite;  visSprite  = nullptr; }
-    if (progSprite) { delete progSprite; progSprite = nullptr; }
-    visSpriteOk = progSpriteOk = false;
-
-    int visAvailW = settingShowCover ? (d.width() - VIS_MARGIN - NP_TEXT_X)
-                                     : (d.width() - 2 * VIS_MARGIN);
-    int pitch = visAvailW / VIS_BARS;
-    VIS_BAR_W = pitch - VIS_BAR_GAP;
-    if (VIS_BAR_W < 1) VIS_BAR_W = 1;
-    int visTotalW = VIS_BARS * VIS_BAR_W + (VIS_BARS - 1) * VIS_BAR_GAP;
-    visLeft = settingShowCover ? NP_TEXT_X : VIS_MARGIN;
-    visTop  = d.height() - VIS_MARGIN - VIS_MAX_H;
-
-    visSprite = new M5Canvas(&d);
-    visSprite->setPsram(false);
-    visSprite->setColorDepth(16);
-    visSpriteOk = (visSprite->createSprite(visTotalW, VIS_MAX_H) != nullptr);
-    if (!visSpriteOk) Serial.println("visualizer sprite alloc failed");
-
-    progSprite = new M5Canvas(&d);
-    progSprite->setPsram(false);
-    progSprite->setColorDepth(16);
-    progSpriteOk = (progSprite->createSprite(progW, PROG_SPRITE_H) != nullptr);
-    if (!progSpriteOk) Serial.println("progress sprite alloc failed");
-}
 
 // The Now Playing visualizer strip supports several selectable styles
 // (Settings -> Visualiseur). All styles fill visSprite and are blitted by
@@ -2266,12 +2204,93 @@ static void drawVisChannels() {
     }
 }
 
+// Style 4 "Pics": smooth solid bars with a falling peak-hold marker, like a
+// modern desktop player EQ (foobar/Winamp-modern look).
+static float visPeaks[VIS_BARS] = {0};
+static void drawVisPeaks() {
+    int h = VIS_MAX_H;
+    visSprite->fillSprite(COL_NP_BG);
+    for (int i = 0; i < VIS_BARS; i++) {
+        float lvl = visHistory[i];
+        if (lvl < 0.0f) lvl = 0.0f;
+        if (lvl > 1.0f) lvl = 1.0f;
+        int barH = (int)(lvl * h);
+        if (barH < 1) barH = 1;
+        int bx = i * (VIS_BAR_W + VIS_BAR_GAP);
+        float tier = (float)(i + 1) / VIS_BARS;
+        uint16_t col = tier <= 0.6f ? COL_PLAY : tier <= 0.85f ? COL_VIS_MID : COL_VIS_HIGH;
+
+        if (barH > visPeaks[i]) visPeaks[i] = barH;         // peak hold
+        else if (visPeaks[i] > 1.0f) visPeaks[i] -= 0.7f;   // smooth fall
+
+        visSprite->fillRect(bx, h - barH, VIS_BAR_W, barH, col);
+        int py = h - (int)visPeaks[i];
+        if (py < 0) py = 0;
+        visSprite->fillRect(bx, py, VIS_BAR_W, 1, COL_NP_TEXT);   // peak cap
+    }
+}
+
+// Style 5 "Pulsation": concentric rings that swell with the bass envelope,
+// colored by intensity -- a calm, modern orb look.
+static float visPulse = 0.0f;
+static void drawVisPulse() {
+    int w = visSprite->width();
+    int h = VIS_MAX_H;
+    int cx = w / 2, cy = h / 2;
+    visSprite->fillSprite(COL_NP_BG);
+
+    float env = lastBassEnvelope;
+    if (env > 0.6f) env = 0.6f;
+    visPulse += 0.22f * (env - visPulse);          // smooth attack/decay
+
+    int r1 = 2 + (int)(visPulse * 24.0f);          // 2..~16 px
+    int maxR = h / 2 - 2;
+    if (r1 > maxR) r1 = maxR;
+    int r2 = r1 - 4;
+    if (r2 < 1) r2 = 1;
+
+    uint16_t col = visPulse > 0.30f ? COL_VIS_HIGH : visPulse > 0.12f ? COL_VIS_MID : COL_PLAY;
+    if (r2 > 1) visSprite->drawCircle(cx, cy, r2, COL_VIS_IDLE);   // inner ring
+    visSprite->drawCircle(cx, cy, r1, col);                        // outer ring
+    visSprite->fillCircle(cx, cy, 2, col);                         // core
+    // faint stereo wings at the edges for context
+    int wing = (int)(visHistL[VIS_HISTORY - 1] * 8.0f);
+    if (wing > 6) wing = 6;
+    if (wing > 0) visSprite->fillRect(0, cy - wing / 2, 2, wing, COL_DIM);
+    int wingR = (int)(visHistR[VIS_HISTORY - 1] * 8.0f);
+    if (wingR > 6) wingR = 6;
+    if (wingR > 0) visSprite->fillRect(w - 2, cy - wingR / 2, 2, wingR, COL_DIM);
+}
+
+// Style 6 "Miroir": symmetric bars growing out of a center axis, tier-colored
+// like a studio mastering EQ.
+static void drawVisMirror() {
+    int h = VIS_MAX_H;
+    int mid = h / 2;
+    visSprite->fillSprite(COL_NP_BG);
+    visSprite->drawFastHLine(0, mid, visSprite->width(), COL_VIS_IDLE);
+    for (int i = 0; i < VIS_BARS; i++) {
+        float lvl = visHistory[i];
+        if (lvl < 0.0f) lvl = 0.0f;
+        if (lvl > 1.0f) lvl = 1.0f;
+        int half = (int)(lvl * (h / 2 - 1));
+        if (half < 1) half = 1;
+        int bx = i * (VIS_BAR_W + VIS_BAR_GAP);
+        float tier = (float)(i + 1) / VIS_BARS;
+        uint16_t col = tier <= 0.6f ? COL_PLAY : tier <= 0.85f ? COL_VIS_MID : COL_VIS_HIGH;
+        visSprite->fillRect(bx, mid - half, VIS_BAR_W, half * 2, col);
+    }
+}
+
 static void drawVisualizer() {
     if (!visSpriteOk) return;
     switch (settingVisStyle) {
         case VIS_WAVE:      drawVisWave();      break;
         case VIS_SPECTRUM:  drawVisSpectrum();  break;
         case VIS_CHANNELS:  drawVisChannels();  break;
+        case VIS_PEAKS:     drawVisPeaks();     break;
+        case VIS_PULSE:     drawVisPulse();     break;
+        case VIS_MIRROR:    drawVisMirror();    break;
         default:            drawVisBars();      break;
     }
     visSprite->pushSprite(visLeft, visTop);
@@ -2844,9 +2863,26 @@ void setup() {
     turntableSpriteOk = (turntableSprite->createSprite(COVER_W, COVER_H) != nullptr);
     if (!turntableSpriteOk) Serial.println("turntable sprite alloc failed");
 
-    // Text column, progress bar and visualizer geometry all depend on the
-    // cover setting (full-width layout when the cover is hidden).
-    applyCoverLayout();
+    // Span the same left margin as the text column (NP_TEXT_X) out to the same
+    // right margin the battery/volume meters use, dividing that span evenly
+    // across VIS_BARS bars.
+    int visAvailW = d.width() - VIS_MARGIN - NP_TEXT_X;
+    int pitch = visAvailW / VIS_BARS;
+    VIS_BAR_W = pitch - VIS_BAR_GAP;
+    int visTotalW = VIS_BARS * VIS_BAR_W + (VIS_BARS - 1) * VIS_BAR_GAP;
+    visLeft = NP_TEXT_X;
+    visTop  = d.height() - VIS_MARGIN - VIS_MAX_H;
+    visSprite = new M5Canvas(&d);
+    visSprite->setPsram(false);
+    visSprite->setColorDepth(16);
+    visSpriteOk = (visSprite->createSprite(visTotalW, VIS_MAX_H) != nullptr);
+    if (!visSpriteOk) Serial.println("visualizer sprite alloc failed");
+
+    progSprite = new M5Canvas(&d);
+    progSprite->setPsram(false);
+    progSprite->setColorDepth(16);
+    progSpriteOk = (progSprite->createSprite(COVER_W, PROG_SPRITE_H) != nullptr);
+    if (!progSpriteOk) Serial.println("progress sprite alloc failed");
 
     out = new AudioOutputM5Speaker(&M5Cardputer.Speaker, 0);
     out->begin();

@@ -5,7 +5,7 @@
 
 A themeable MP3 / FLAC / WAV / AAC player firmware for the [M5Stack Cardputer ADV](https://shop.m5stack.com/products/m5stack-cardputer-adv-version-esp32-s3) (ESP32-S3). SD-card folder browsing, album art, custom color themes, and a couple of full-screen visualizers.
 
-> **Ember+** — this fork adds 17 built-in themes, translates the UI into French, and shows **only the `Music` folder at the SD root** (it is created automatically on first boot; put your Artist → Album → Track tree inside it). Also adds a cover on/off setting and 4 Now Playing visualizer styles.
+> **Ember+** — this fork adds 17 built-in themes, translates the UI into French, and shows **only the `Music` folder at the SD root** (it is created automatically on first boot; put your Artist → Album → Track tree inside it). Also adds 7 selectable Now Playing visualizer styles.
 
 
 <p float="left">
@@ -25,8 +25,7 @@ A themeable MP3 / FLAC / WAV / AAC player firmware for the [M5Stack Cardputer AD
 - **Folder browsing** straight off the SD card (Artist → Album → Track), natural-sorted, no library scan/database step.
 - **MP3, FLAC, WAV, and AAC** playback.
 - **Themeable UI** — 17 built-in themes (Ember, 90's Sweater, Aqua, Honey, Moody, Terminal Green, Tokyo Night, Dracula, Gruvbox, Catppuccin, Rosé Pine, Monokai, Nord, Apprentice, Amber on Black, Zenburn, Tomorrow Night)
-- **Cover toggle** (Settings → Pochette): hide the album-art box so the Now Playing text, progress bar and visualizer span the full screen width.
-- **Selectable visualizer styles** (Settings → Visualiseur): LED bars (classic), oscilloscope waveform, mini real-FFT spectrum, or dual stereo channels — all on the Now Playing screen.
+- **Selectable visualizer styles** (Settings → Visualiseur): 7 styles on the Now Playing screen — LED bars (classic), oscilloscope waveform, mini real-FFT spectrum, dual stereo channels, peak-hold bars, bass pulse orb, and mirrored center-out bars.
 - **Two full-screen visualizers**: a real FFT spectrum analyzer (bars + peak-hold + waveform overlay + stereo level meter), and a full-screen silhouette dance visualizer that reacts to bass hits in the music.
 - **Now Playing extras**: embedded album art (JPEG/PNG/BMP/QOI), an animated turntable placeholder for tracks with no art, a small amplitude visualizer, seek with double-tap-to-restart/skip, and battery/volume meters.
 - **Settings**: backlight level, screen-off timeout, end-of-album behavior, and theme — all persisted across reboots.

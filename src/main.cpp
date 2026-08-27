@@ -105,103 +105,6 @@ static constexpr uint16_t rgb565(uint8_t r, uint8_t g, uint8_t b) {
     return (uint16_t)(((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3));
 }
 
-// Warm amber/ember palette on near-black, matching the "Ember" name.
-// Generated via tools/theme-editor.html, preset "Ember".
-static const Theme THEME_EMBER = {
-    rgb565(12, 8, 6),          // bg
-    rgb565(42, 24, 14),        // header
-    rgb565(245, 230, 215),     // headerText
-    rgb565(255, 158, 56),      // folder
-    rgb565(233, 219, 205),     // file
-    rgb565(196, 88, 22),       // selBg
-    rgb565(255, 244, 230),     // selFg
-    rgb565(122, 98, 82),       // dim
-    rgb565(130, 210, 100),     // play
-    rgb565(255, 255, 255),     // npText
-    rgb565(255, 255, 255),     // volumeIcon
-    rgb565(255, 244, 230),     // progressDot
-    rgb565(255, 255, 0),       // visMid
-    rgb565(255, 0, 0),         // visHigh
-    rgb565(12, 8, 6),          // npBg
-    rgb565(135, 120, 110),     // visIdle
-};
-// Generated via tools/theme-editor.html, preset "90's Sweater".
-static const Theme THEME_90S_SWEATER = {
-    rgb565(160, 41, 43),       // bg
-    rgb565(52, 92, 102),       // header
-    rgb565(255, 242, 174),     // headerText
-    rgb565(83, 11, 14),        // folder
-    rgb565(255, 241, 177),     // file
-    rgb565(154, 167, 140),     // selBg
-    rgb565(255, 244, 230),     // selFg
-    rgb565(83, 11, 14),        // dim
-    rgb565(83, 11, 14),        // play
-    rgb565(255, 255, 255),     // npText
-    rgb565(52, 92, 102),       // volumeIcon
-    rgb565(52, 92, 102),       // progressDot
-    rgb565(154, 167, 140),     // visMid
-    rgb565(255, 241, 178),     // visHigh
-    rgb565(154, 39, 39),       // npBg
-    rgb565(52, 92, 102),       // visIdle
-};
-
-// Generated via tools/theme-editor.html, preset "Aqua".
-static const Theme THEME_AQUA = {
-    rgb565(33, 192, 192),      // bg
-    rgb565(65, 82, 214),       // header
-    rgb565(1, 209, 209),       // headerText
-    rgb565(0, 91, 92),         // folder
-    rgb565(0, 91, 92),         // file
-    rgb565(65, 82, 214),       // selBg
-    rgb565(255, 244, 230),     // selFg
-    rgb565(0, 173, 174),       // dim
-    rgb565(65, 82, 214),       // play
-    rgb565(65, 82, 214),       // npText
-    rgb565(65, 82, 214),       // volumeIcon
-    rgb565(65, 82, 214),       // progressDot
-    rgb565(125, 134, 202),     // visMid
-    rgb565(176, 212, 212),     // visHigh
-    rgb565(2, 9, 44),          // npBg
-    rgb565(47, 61, 117),       // visIdle
-};
-// Generated via tools/theme-editor.html, preset "Honey".
-static const Theme THEME_HONEY = {
-    rgb565(249, 223, 118),     // bg
-    rgb565(255, 199, 33),      // header
-    rgb565(137, 81, 42),       // headerText
-    rgb565(137, 81, 42),       // folder
-    rgb565(137, 81, 42),       // file
-    rgb565(137, 81, 42),       // selBg
-    rgb565(255, 244, 230),     // selFg
-    rgb565(137, 81, 42),       // dim
-    rgb565(137, 81, 42),       // play
-    rgb565(137, 81, 42),       // npText
-    rgb565(137, 81, 42),       // volumeIcon
-    rgb565(137, 81, 42),       // progressDot
-    rgb565(255, 199, 33),      // visMid
-    rgb565(255, 252, 207),     // visHigh
-    rgb565(249, 223, 118),     // npBg
-    rgb565(249, 223, 118),     // visIdle
-};
-// Generated via tools/theme-editor.html, preset "Moody".
-static const Theme THEME_MOODY = {
-    rgb565(12, 8, 6),          // bg
-    rgb565(93, 79, 79),        // header
-    rgb565(210, 208, 209),     // headerText
-    rgb565(152, 134, 134),     // folder
-    rgb565(233, 219, 205),     // file
-    rgb565(152, 134, 134),     // selBg
-    rgb565(255, 244, 230),     // selFg
-    rgb565(152, 134, 134),     // dim
-    rgb565(93, 79, 79),        // play
-    rgb565(255, 255, 255),     // npText
-    rgb565(255, 255, 255),     // volumeIcon
-    rgb565(255, 244, 230),     // progressDot
-    rgb565(152, 134, 134),     // visMid
-    rgb565(210, 208, 209),     // visHigh
-    rgb565(12, 8, 6),          // npBg
-    rgb565(8, 8, 0),           // visIdle
-};
 // Generated via tools/theme-editor.html, preset "Terminal Green".
 static const Theme THEME_TERMINAL_GREEN = {
     rgb565(12, 8, 6),          // bg
@@ -320,63 +223,9 @@ static const Theme THEME_ROSE_PINE = {
     rgb565(31, 29, 46),        // npBg         #1f1d2e
     rgb565(38, 35, 58),        // visIdle      #26233a
 };
-// Inspired by the celebrated "Monokai" theme (Sublime Text classic).
-static const Theme THEME_MONOKAI = {
-    rgb565(39, 40, 34),        // bg           #272822
-    rgb565(32, 33, 28),        // header       #20211c
-    rgb565(248, 248, 242),     // headerText   #f8f8f2
-    rgb565(102, 217, 239),     // folder       #66d9ef (blue)
-    rgb565(248, 248, 242),     // file         #f8f8f2
-    rgb565(73, 72, 62),        // selBg        #49483e (selection)
-    rgb565(248, 248, 242),     // selFg        #f8f8f2
-    rgb565(117, 113, 94),      // dim          #75715e (comment)
-    rgb565(166, 226, 46),      // play         #a6e22e (green)
-    rgb565(248, 248, 242),     // npText       #f8f8f2
-    rgb565(174, 129, 255),     // volumeIcon   #ae81ff (purple)
-    rgb565(249, 38, 114),      // progressDot  #f92672 (pink)
-    rgb565(230, 219, 116),     // visMid       #e6db74 (yellow)
-    rgb565(249, 38, 114),      // visHigh      #f92672 (pink)
-    rgb565(32, 33, 28),        // npBg         #20211c
-    rgb565(73, 72, 62),        // visIdle      #49483e
-};
-// Inspired by the celebrated "Nord" theme (arcticicestudio).
-static const Theme THEME_NORD = {
-    rgb565(46, 52, 64),        // bg           #2e3440 (nord0)
-    rgb565(59, 66, 82),        // header       #3b4252 (nord1)
-    rgb565(236, 239, 244),     // headerText   #eceff4 (nord6)
-    rgb565(136, 192, 208),     // folder       #88c0d0 (nord8)
-    rgb565(216, 222, 233),     // file         #d8dee9 (nord4)
-    rgb565(67, 76, 94),        // selBg        #434c5e (nord2)
-    rgb565(236, 239, 244),     // selFg        #eceff4
-    rgb565(76, 86, 106),       // dim          #4c566a (nord3)
-    rgb565(163, 190, 140),     // play         #a3be8c (nord14)
-    rgb565(229, 233, 240),     // npText       #e5e9f0 (nord5)
-    rgb565(129, 161, 193),     // volumeIcon   #81a1c1 (nord9)
-    rgb565(180, 142, 173),     // progressDot  #b48ead (nord15)
-    rgb565(235, 203, 139),     // visMid       #ebcb8b (nord13)
-    rgb565(191, 97, 106),      // visHigh      #bf616a (nord11)
-    rgb565(59, 66, 82),        // npBg         #3b4252
-    rgb565(67, 76, 94),        // visIdle      #434c5e
-};
-// Inspired by the celebrated "Apprentice" theme (vim, romainl).
-static const Theme THEME_APPRENTICE = {
-    rgb565(38, 38, 38),        // bg           #262626
-    rgb565(28, 28, 28),        // header       #1c1c1c
-    rgb565(188, 188, 188),     // headerText   #bcbcbc
-    rgb565(135, 215, 215),     // folder       #87d7d7 (cyan)
-    rgb565(188, 188, 188),     // file         #bcbcbc
-    rgb565(48, 48, 48),        // selBg        #303030
-    rgb565(255, 255, 255),     // selFg        #ffffff
-    rgb565(108, 108, 108),     // dim          #6c6c6c (comment)
-    rgb565(135, 175, 135),     // play         #87af87 (green)
-    rgb565(255, 255, 255),     // npText       #ffffff
-    rgb565(95, 135, 175),      // volumeIcon   #5f87af (blue)
-    rgb565(175, 135, 175),     // progressDot  #af87af (purple)
-    rgb565(255, 255, 135),     // visMid       #ffff87 (yellow)
-    rgb565(255, 95, 95),       // visHigh      #ff5f5f (red)
-    rgb565(28, 28, 28),        // npBg         #1c1c1c
-    rgb565(48, 48, 48),        // visIdle      #303030
-};
+
+
+
 // Inspired by the classic "Amber on Black" CRT phosphor look.
 static const Theme THEME_AMBER = {
     rgb565(0, 0, 0),           // bg           #000000
@@ -415,30 +264,12 @@ static const Theme THEME_ZENBURN = {
     rgb565(63, 63, 63),        // npBg         #3f3f3f
     rgb565(79, 79, 79),        // visIdle      #4f4f4f
 };
-// Inspired by the celebrated "Tomorrow Night" theme (Chris Kempson).
-static const Theme THEME_TOMORROW_NIGHT = {
-    rgb565(29, 31, 33),        // bg           #1d1f21
-    rgb565(40, 42, 46),        // header       #282a2e (current line)
-    rgb565(197, 200, 198),     // headerText   #c5c8c6
-    rgb565(138, 190, 183),     // folder       #8abeb7 (aqua)
-    rgb565(197, 200, 198),     // file         #c5c8c6
-    rgb565(55, 59, 65),        // selBg        #373b41 (selection)
-    rgb565(197, 200, 198),     // selFg        #c5c8c6
-    rgb565(150, 152, 150),     // dim          #969896 (comment)
-    rgb565(181, 189, 104),     // play         #b5bd68 (green)
-    rgb565(197, 200, 198),     // npText       #c5c8c6
-    rgb565(129, 162, 190),     // volumeIcon   #81a2be (blue)
-    rgb565(178, 148, 187),     // progressDot  #b294bb (purple)
-    rgb565(240, 198, 116),     // visMid       #f0c674 (yellow)
-    rgb565(204, 102, 102),     // visHigh      #cc6666 (red)
-    rgb565(40, 42, 46),        // npBg         #282a2e
-    rgb565(55, 59, 65),        // visIdle      #373b41
-};
+
 
 // All available themes, cycled from Settings -> Theme; Ember is always the
 // default at boot (index 0), regardless of what's added after it.
-static const Theme* const THEME_LIST[] = { &THEME_EMBER, &THEME_90S_SWEATER, &THEME_AQUA, &THEME_HONEY, &THEME_MOODY, &THEME_TERMINAL_GREEN, &THEME_TOKYO_NIGHT, &THEME_DRACULA, &THEME_GRUVBOX, &THEME_CATPPUCCIN, &THEME_ROSE_PINE, &THEME_MONOKAI, &THEME_NORD, &THEME_APPRENTICE, &THEME_AMBER, &THEME_ZENBURN, &THEME_TOMORROW_NIGHT };
-static const char* THEME_LABELS[] = { "Ember", "90's Sweater", "Aqua", "Honey", "Moody", "Terminal Green", "Tokyo Night", "Dracula", "Gruvbox", "Catppuccin", "Rosé Pine", "Monokai", "Nord", "Apprentice", "Amber on Black", "Zenburn", "Tomorrow Night" };
+static const Theme* const THEME_LIST[] = { &THEME_TERMINAL_GREEN, &THEME_TOKYO_NIGHT, &THEME_DRACULA, &THEME_GRUVBOX, &THEME_CATPPUCCIN, &THEME_ROSE_PINE, &THEME_AMBER, &THEME_ZENBURN };
+static const char* THEME_LABELS[] = { "Terminal Green", "Tokyo Night", "Dracula", "Gruvbox", "Catppuccin", "Rosé Pine", "Amber on Black", "Zenburn" };
 static const int THEME_COUNT = sizeof(THEME_LIST) / sizeof(THEME_LIST[0]);
 
 // User themes loaded from /themes/*.json on SD at boot (see loadCustomThemes()
@@ -457,7 +288,7 @@ static const Theme& themeAt(int idx) {
     return (idx < THEME_COUNT) ? *THEME_LIST[idx] : customThemes[idx - THEME_COUNT];
 }
 
-static Theme theme = THEME_EMBER;
+static Theme theme = THEME_TERMINAL_GREEN;
 
 #define COL_BG          theme.bg
 #define COL_HEADER      theme.header
@@ -503,7 +334,7 @@ static const char*    screenOffLabels[]    = { "Jamais", "10 s", "30 s", "60 s" 
 static const int SCREEN_OFF_COUNT = sizeof(screenOffTimeoutMs) / sizeof(screenOffTimeoutMs[0]);
 static int settingScreenOffIdx = 2;   // default 30 sec
 
-static int settingThemeIdx = 0;   // default Ember (THEME_LIST[0])
+static int settingThemeIdx = 0;   // default Terminal Green (THEME_LIST[0])
 
 // Off by default -- screenshot capture reads the framebuffer back over SPI
 // (see saveScreenshot()), which most people flashing this will never use,
@@ -2943,7 +2774,7 @@ static bool parseThemeJson(const char* json, Theme& outTheme, char* outName, siz
         {"npText", &Theme::npText}, {"volumeIcon", &Theme::volumeIcon}, {"progressDot", &Theme::progressDot},
         {"visMid", &Theme::visMid}, {"visHigh", &Theme::visHigh}, {"npBg", &Theme::npBg}, {"visIdle", &Theme::visIdle},
     };
-    outTheme = THEME_EMBER;
+    outTheme = THEME_TERMINAL_GREEN;
     char hexBuf[16];
     bool foundAny = false;
     for (const auto& f : fields) {

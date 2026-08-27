@@ -1,0 +1,8 @@
+# Ember+ — WiFi
+# Copiez ce fichier à la racine de la carte SD sous le nom : wifi.txt
+#
+# Ligne 1 : nom du réseau (SSID)
+# Ligne 2 : mot de passe
+# Les lignes commençant par '#' et les lignes vides sont ignorées.
+MonReseauWiFi
+mon_mot_de_passe

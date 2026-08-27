@@ -5,7 +5,7 @@
 
 A themeable MP3 / FLAC / WAV / AAC player firmware for the [M5Stack Cardputer ADV](https://shop.m5stack.com/products/m5stack-cardputer-adv-version-esp32-s3) (ESP32-S3). SD-card folder browsing, album art, custom color themes, and a couple of full-screen visualizers.
 
-> **Ember+** — this fork adds 17 built-in themes, translates the UI into French, and shows **only the `Music` folder at the SD root** (it is created automatically on first boot; put your Artist → Album → Track tree inside it). Also adds 7 selectable Now Playing visualizer styles.
+> **Ember+** — this fork adds 17 built-in themes, translates the UI into French, and shows **only the `Music` folder at the SD root** (it is created automatically on first boot; put your Artist → Album → Track tree inside it). Also adds 7 selectable Now Playing visualizer styles and **remote music playback from a Subsonic/Gonic server (key `w`)**.
 
 
 <p float="left">
@@ -78,6 +78,22 @@ The Cardputer has no dedicated arrow keys — the punctuation cluster doubles as
 | `a` (Now Playing) | Toggle turntable placeholder vs. real album art |
 | `s` | Settings |
 | `c` | Save a screenshot to `/screenshots` on the SD card (hold to burst-capture) |
+| `w` | Open / close the remote music player (Subsonic/Gonic) |
+
+## Remote music (Subsonic / Gonic)
+
+Press `w` to browse your self-hosted music server over WiFi: **Artists → Albums → Songs** (Subsonic API: Gonic, Navidrome, Airsonic, stock Subsonic…). The screen reuses EMBER's theme and row style; `;` / `.` move, Enter or `/` opens, `,` goes back up a level, `` ` `` or `w` (at the artist level) returns to the SD browser, and `m` toggles between the song list and Now Playing. Volume, pause, visualizers and screenshots work as usual, and `,` / `/` on Now Playing seek inside MP3s (HTTP Range) with double-tap for previous/next song.
+
+Remote albums play sequentially (the end-of-album setting applies to the SD library; remote albums stop at the end and return to the song list). The Now Playing screen shows title / artist / album from the server's metadata and a framed placeholder in place of the cover art. MP3, AAC and FLAC streams are supported.
+
+### Files on the SD card
+
+| File | Content |
+|---|---|
+| `/wifi.txt` | WiFi credentials — line 1 SSID, line 2 password (see [`config/wifi.txt.example`](config/wifi.txt.example)) |
+| `/subsonic.txt` | Server address, username, password — lines 1–3 (see [`config/subsonic.txt.example`](config/subsonic.txt.example)) |
+
+If a file is missing or empty, the firmware falls back to the hardcoded values at the bottom of `src/network.h` (recompile needed). WiFi connects on demand (first `w` press) and is turned off when you leave the network player — SD playback and boot behavior are untouched. Authentication uses the Subsonic token scheme (`md5(password + salt)`), so the password itself never travels over the network.
 
 ## Custom themes
 

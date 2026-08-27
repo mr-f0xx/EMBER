@@ -1,0 +1,12 @@
+# Ember+ — serveur Subsonic/Gonic
+# Copiez ce fichier à la racine de la carte SD sous le nom : subsonic.txt
+#
+# Ligne 1 : adresse du serveur (Gonic, Navidrome, Airsonic...)
+# Ligne 2 : nom d'utilisateur
+# Ligne 3 : mot de passe
+# Les lignes commençant par '#' et les lignes vides sont ignorées.
+#
+# Exemple pour un Gonic local (port par défaut 4533) :
+http://192.168.1.10:4533
+mon_utilisateur
+mon_mot_de_passe

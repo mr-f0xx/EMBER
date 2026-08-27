@@ -29,7 +29,6 @@ A themeable MP3 / FLAC / WAV / AAC player firmware for the [M5Stack Cardputer AD
 - **Two full-screen visualizers**: a real FFT spectrum analyzer (bars + peak-hold + waveform overlay + stereo level meter), and a full-screen silhouette dance visualizer that reacts to bass hits in the music.
 - **Now Playing extras**: embedded album art (JPEG/PNG/BMP/QOI), an animated turntable placeholder for tracks with no art, a small amplitude visualizer, seek with double-tap-to-restart/skip, and battery/volume meters.
 - **Settings**: backlight level, screen-off timeout, end-of-album behavior, and theme — all persisted across reboots.
-- **On-device screenshot capture** (see [Screenshots](#taking-your-own-screenshots) below) for pulling real UI captures without photographing the screen.
 - **Multi-language support** displays Japanese, Chinese, Cyrillic (Russian, etc.), Greek, and accented Latin (French, German, Spanish, etc). 
 
 ## Hardware
@@ -77,12 +76,11 @@ The Cardputer has no dedicated arrow keys — the punctuation cluster doubles as
 | `v` (Now Playing) | Cycle full-screen visualizer: spectrum → dancers → back |
 | `a` (Now Playing) | Toggle turntable placeholder vs. real album art |
 | `s` | Settings |
-| `c` | Save a screenshot to `/screenshots` on the SD card (hold to burst-capture) |
 | `w` | Open / close the remote music player (Subsonic/Gonic) |
 
 ## Remote music (Subsonic / Gonic)
 
-Press `w` to browse your self-hosted music server over WiFi: **Artists → Albums → Songs** (Subsonic API: Gonic, Navidrome, Airsonic, stock Subsonic…). The screen reuses EMBER's theme and row style; `;` / `.` move, Enter or `/` opens, `,` goes back up a level, `` ` `` or `w` (at the artist level) returns to the SD browser, and `m` toggles between the song list and Now Playing. Volume, pause, visualizers and screenshots work as usual, and `,` / `/` on Now Playing seek inside MP3s (HTTP Range) with double-tap for previous/next song.
+Press `w` to browse your self-hosted music server over WiFi: **Artists → Albums → Songs** (Subsonic API: Gonic, Navidrome, Airsonic, stock Subsonic…). The screen reuses EMBER's theme and row style; `;` / `.` move, Enter or `/` opens, `,` goes back up a level, `` ` `` or `w` (at the artist level) returns to the SD browser, and `m` toggles between the song list and Now Playing. Volume, pause and the visualizers work as usual, and `,` / `/` on Now Playing seek inside MP3s (HTTP Range) with double-tap for previous/next song.
 
 Remote albums play sequentially (the end-of-album setting applies to the SD library; remote albums stop at the end and return to the song list). The Now Playing screen shows title / artist / album from the server's metadata and a framed placeholder in place of the cover art. MP3, AAC and FLAC streams are supported.
 
@@ -104,10 +102,6 @@ Every color in the UI — backgrounds, text, selection highlight, visualizer tie
 **Use it on your device (no recompiling):** on the JSON tab, click **Download**, then copy the file into a `/themes` folder on your SD card. After a reboot, it shows up as an extra option under **Settings → Theme**.
 
 The editor also works completely offline as a local file (`tools/theme-editor.html`) if you'd rather not use the hosted copy.
-
-## Taking your own screenshots
-
-Press `c` on any screen to save a BMP to `/screenshots` on the SD card; hold it to burst-capture a sequence (useful for the animated screens). There's no timestamp metadata (no RTC on this board), so if you need to tell capture sessions apart afterward, diffing consecutive frames for content changes works well.
 
 ## Credit
 Thank you to the creators of the following repositories (in no particular order) that inspired this project and provided a code base to start.

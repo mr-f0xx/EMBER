@@ -32,7 +32,6 @@ static const char KEY_NOWPLAYING = 'm';
 static const char KEY_SETTINGS = 's';
 static const char KEY_ART_TOGGLE = 'a';   // Now Playing only: force turntable vs real art
 static const char KEY_FULLVIS = 'v';      // Now Playing only: toggle full-screen visualizer
-static const char KEY_SCREENSHOT = 'c';   // any screen: save a BMP to SD; hold to burst-capture
 static const char KEY_NETWORK = 'w';      // any screen (except settings): open/close the network player
 // ENTER also opens/plays; backtick ` also goes back; SPACE = pause/resume
 
@@ -336,19 +335,12 @@ static int settingScreenOffIdx = 2;   // default 30 sec
 
 static int settingThemeIdx = 0;   // default Terminal Green (THEME_LIST[0])
 
-// Off by default -- screenshot capture reads the framebuffer back over SPI
-// (see saveScreenshot()), which most people flashing this will never use,
-// so it shouldn't be live by default just because the 'c' key happens to be
-// otherwise unbound.
-static const char* onOffLabels[] = { "Non", "Oui" };
-static bool settingScreenshotsEnabled = false;
-
 // Now Playing small-visualizer style.
 enum VisStyle { VIS_BARS_LED, VIS_WAVE, VIS_SPECTRUM, VIS_CHANNELS, VIS_PEAKS, VIS_PULSE, VIS_MIRROR, VIS_STYLE_COUNT };
 static const char* visStyleLabels[VIS_STYLE_COUNT] = { "Barres", "Vagues", "Spectre", "Canaux", "Pics", "Pulsation", "Miroir" };
 static VisStyle settingVisStyle = VIS_BARS_LED;
 
-static const int SETTINGS_COUNT = 6;
+static const int SETTINGS_COUNT = 5;
 static int settingsCursor = 0;
 
 // Rows visible at once in the settings box -- SETTINGS_COUNT no longer fits
@@ -370,7 +362,6 @@ static void loadSettings() {
     settingScreenOffIdx = settingsPrefs.getInt("screenOff", 2);
     albumEndMode = (AlbumEndMode)settingsPrefs.getInt("albumEnd", ALBUM_STOP);
     settingThemeIdx = settingsPrefs.getInt("themeIdx", 0);
-    settingScreenshotsEnabled = settingsPrefs.getBool("screenshots", false);
     settingVisStyle = (VisStyle)settingsPrefs.getInt("visStyle", 0);
     settingsPrefs.end();
 
@@ -389,7 +380,6 @@ static void saveSettings() {
     settingsPrefs.putInt("screenOff", settingScreenOffIdx);
     settingsPrefs.putInt("albumEnd", (int)albumEndMode);
     settingsPrefs.putInt("themeIdx", settingThemeIdx);
-    settingsPrefs.putBool("screenshots", settingScreenshotsEnabled);
     settingsPrefs.putInt("visStyle", (int)settingVisStyle);
     settingsPrefs.end();
 }
@@ -1892,13 +1882,12 @@ static void drawSettingsBox() {
     d.setCursor(boxX + 6, boxY + (titleH - d.fontHeight()) / 2);
     d.print("Réglages");
 
-    const char* names[SETTINGS_COUNT]  = { "Luminosité", "Veille écran", "Fin d'album", "Thème", "Captures", "Visualiseur" };
+    const char* names[SETTINGS_COUNT]  = { "Luminosité", "Veille écran", "Fin d'album", "Thème", "Visualiseur" };
     String values[SETTINGS_COUNT] = {
         backlightLabels[settingBacklightIdx],
         screenOffLabels[settingScreenOffIdx],
         albumEndLabels[albumEndMode],
         themeLabelAt(settingThemeIdx),
-        onOffLabels[settingScreenshotsEnabled ? 1 : 0],
         visStyleLabels[settingVisStyle],
     };
     for (int row = 0; row < SETTINGS_VISIBLE; row++) {
@@ -1973,9 +1962,6 @@ static void cycleSetting(int idx) {
             drawSettings();
             return;
         case 4:
-            settingScreenshotsEnabled = !settingScreenshotsEnabled;
-            break;
-        case 5:
             settingVisStyle = (VisStyle)((settingVisStyle + 1) % VIS_STYLE_COUNT);
             break;
     }
@@ -2628,96 +2614,6 @@ static void showSplash() {
     }
 }
 
-// ---------- Screenshots (KEY_SCREENSHOT, any screen) ----------
-// Off by default -- see settingScreenshotsEnabled (Settings -> Screenshots).
-// For pulling real on-device screenshots for documentation/README use
-// without photographing the screen. Reads the framebuffer back over SPI via
-// LovyanGFX's readRect() and writes a plain 24-bit uncompressed BMP to SD --
-// untested on this specific panel, since screen readback support/speed
-// varies a lot by panel controller. If this comes out blank, garbled, or
-// visibly wrong-side-out colorwise, that's readback quirks to work around,
-// not an obviously-wrong approach.
-//
-// readRect(..., uint16_t*) hands back swap565 (byte-swapped RGB565), same
-// as M5Canvas's raw sprite buffer elsewhere in this file -- see
-// boostArtVibrance()'s comment for why that byte-swap matters.
-//
-// Holding the key repeats the capture (same hold-repeat pattern as seeking)
-// so a short animation -- the visualizer, the turntable, the dancers -- can
-// be captured as a numbered sequence of BMPs and stitched into a GIF
-// afterward (e.g. `ffmpeg -i shot_%03d.bmp -vf palettegen palette.png` then
-// `ffmpeg -i shot_%03d.bmp -i palette.png -lavfi paletteuse out.gif`).
-static int screenshotIndex = -1;   // -1 = not yet scanned this boot
-
-static void initScreenshotIndex() {
-    if (screenshotIndex >= 0) return;
-    screenshotIndex = 0;
-    if (!SD.exists("/screenshots")) SD.mkdir("/screenshots");
-    File dir = SD.open("/screenshots");
-    if (dir) {
-        File e = dir.openNextFile();
-        while (e) {
-            int n = 0;
-            if (sscanf(baseName(e.name()), "shot_%d.bmp", &n) == 1 && n >= screenshotIndex) {
-                screenshotIndex = n + 1;
-            }
-            e.close();
-            e = dir.openNextFile();
-        }
-        dir.close();
-    }
-}
-
-static void saveScreenshot() {
-    if (!settingScreenshotsEnabled) return;   // off by default -- Settings -> Screenshots
-    initScreenshotIndex();
-    auto &d = M5Cardputer.Display;
-    int w = d.width(), h = d.height();
-    int rowSize = ((w * 3 + 3) / 4) * 4;   // BMP rows padded to a 4-byte boundary
-    uint32_t dataSize = (uint32_t)rowSize * h;
-
-    char path[48];
-    snprintf(path, sizeof(path), "/screenshots/shot_%03d.bmp", screenshotIndex);
-    File f = SD.open(path, FILE_WRITE);
-    if (!f) { Serial.printf("screenshot: failed to open %s\n", path); return; }
-    screenshotIndex++;
-
-    uint8_t hdr[54] = {0};
-    hdr[0] = 'B'; hdr[1] = 'M';
-    uint32_t fileSize = 54 + dataSize;
-    memcpy(hdr + 2,  &fileSize, 4);
-    uint32_t dataOffset = 54;
-    memcpy(hdr + 10, &dataOffset, 4);
-    uint32_t dibSize = 40;
-    memcpy(hdr + 14, &dibSize, 4);
-    int32_t bw = w, bh = h;                // positive height => bottom-up row order (BMP's native order)
-    memcpy(hdr + 18, &bw, 4);
-    memcpy(hdr + 22, &bh, 4);
-    uint16_t planes = 1, bpp = 24;
-    memcpy(hdr + 26, &planes, 2);
-    memcpy(hdr + 28, &bpp, 2);
-    memcpy(hdr + 34, &dataSize, 4);
-    f.write(hdr, sizeof(hdr));
-
-    uint16_t rowPixels[320];   // wide enough for this display; bump if it ever changes
-    uint8_t rowOut[960];
-    for (int y = h - 1; y >= 0; y--) {     // write bottom row first
-        d.readRect(0, y, w, 1, rowPixels);
-        int o = 0;
-        for (int x = 0; x < w; x++) {
-            uint16_t raw = rowPixels[x];
-            uint16_t px = (raw >> 8) | (raw << 8);   // undo swap565
-            rowOut[o++] = (uint8_t)(((px & 0x1F) * 255) / 31);          // B
-            rowOut[o++] = (uint8_t)((((px >> 5) & 0x3F) * 255) / 63);   // G
-            rowOut[o++] = (uint8_t)((((px >> 11) & 0x1F) * 255) / 31);  // R
-        }
-        while (o < rowSize) rowOut[o++] = 0;
-        f.write(rowOut, rowSize);
-    }
-    f.close();
-    Serial.printf("screenshot saved: %s\n", path);
-}
-
 // ---------- Custom themes (SD: /themes/*.json) ----------
 // One JSON file per theme, same shape tools/theme-editor.html exports (a
 // flat "colors" object of "#rrggbb" strings). Hand-rolled substring-search
@@ -3101,7 +2997,6 @@ void loop() {
                 }
                 else if (c == KEY_VOLUP) changeVolume(+15);
                 else if (c == KEY_VOLDN) changeVolume(-15);
-                else if (c == KEY_SCREENSHOT) saveScreenshot();
             }
         }
     }
@@ -3123,21 +3018,6 @@ void loop() {
         } else leftHoldNext = 0;
     } else {
         rightHoldNext = 0; leftHoldNext = 0;
-    }
-
-    // ---- screenshot burst capture (hold KEY_SCREENSHOT) ----
-    // Same hold-repeat pattern as the seek keys above, just on its own timer
-    // (slower -- SD writes aren't free) and not restricted to Now Playing.
-    {
-        static unsigned long shotHoldNext = 0;
-        const uint32_t SHOT_HOLD_DELAY_MS = 500, SHOT_HOLD_REPEAT_MS = 400;
-        if (!screenIsOff && M5Cardputer.Keyboard.isKeyPressed(KEY_SCREENSHOT)) {
-            unsigned long now = millis();
-            if (shotHoldNext == 0) shotHoldNext = now + SHOT_HOLD_DELAY_MS;
-            else if (now >= shotHoldNext) { saveScreenshot(); shotHoldNext = now + SHOT_HOLD_REPEAT_MS; }
-        } else {
-            shotHoldNext = 0;
-        }
     }
 
     // ---- screen-off timeout ----

@@ -24,7 +24,9 @@ A themeable MP3 / FLAC / WAV / AAC player firmware for the [M5Stack Cardputer AD
 
 - **Folder browsing** straight off the SD card (Artist → Album → Track), natural-sorted, no library scan/database step.
 - **MP3, FLAC, WAV, and AAC** playback.
-- **Themeable UI** — 10 built-in themes (Ember, 90's Sweater, Aqua, Honey, Moody, Terminal Green, Tokyo Night, Dracula, Gruvbox, Catppuccin), plus a [browser-based theme editor](#custom-themes) for making your own and loading them from the SD card, no recompiling required.
+- **Themeable UI** — 17 built-in themes (Ember, 90's Sweater, Aqua, Honey, Moody, Terminal Green, Tokyo Night, Dracula, Gruvbox, Catppuccin, Rosé Pine, Monokai, Nord, Apprentice, Amber on Black, Zenburn, Tomorrow Night), plus a [browser-based theme editor](#custom-themes) for making your own and loading them from the SD card, no recompiling required.
+- **Cover toggle** (Settings → Pochette): hide the album-art box so the Now Playing text, progress bar and visualizer span the full screen width.
+- **Selectable visualizer styles** (Settings → Visualiseur): LED bars (classic), oscilloscope waveform, mini real-FFT spectrum, or dual stereo channels — all on the Now Playing screen.
 - **Two full-screen visualizers**: a real FFT spectrum analyzer (bars + peak-hold + waveform overlay + stereo level meter), and a full-screen silhouette dance visualizer that reacts to bass hits in the music.
 - **Now Playing extras**: embedded album art (JPEG/PNG/BMP/QOI), an animated turntable placeholder for tracks with no art, a small amplitude visualizer, seek with double-tap-to-restart/skip, and battery/volume meters.
 - **Settings**: backlight level, screen-off timeout, end-of-album behavior, and theme — all persisted across reboots.

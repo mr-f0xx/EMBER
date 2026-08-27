@@ -298,10 +298,144 @@ static const Theme THEME_CATPPUCCIN = {
     rgb565(49, 50, 68),        // visIdle      #313244 (surface0)
 };
 
+// Inspired by the celebrated "Rosé Pine" theme (rosepinetheme.com).
+static const Theme THEME_ROSE_PINE = {
+    rgb565(25, 23, 36),        // bg           #191724 (base)
+    rgb565(31, 29, 46),        // header       #1f1d2e (surface)
+    rgb565(224, 222, 244),     // headerText   #e0def4 (text)
+    rgb565(235, 188, 186),     // folder       #ebbcba (rose)
+    rgb565(224, 222, 244),     // file         #e0def4 (text)
+    rgb565(38, 35, 58),        // selBg        #26233a (overlay)
+    rgb565(224, 222, 244),     // selFg        #e0def4
+    rgb565(144, 140, 170),     // dim          #908caa (subtle)
+    rgb565(156, 207, 216),     // play         #9ccfd8 (foam)
+    rgb565(224, 222, 244),     // npText       #e0def4
+    rgb565(49, 116, 143),      // volumeIcon   #31748f (pine)
+    rgb565(196, 167, 231),     // progressDot  #c4a7e7 (iris)
+    rgb565(246, 193, 119),     // visMid       #f6c177 (gold)
+    rgb565(235, 111, 146),     // visHigh      #eb6f92 (love)
+    rgb565(31, 29, 46),        // npBg         #1f1d2e
+    rgb565(38, 35, 58),        // visIdle      #26233a
+};
+// Inspired by the celebrated "Monokai" theme (Sublime Text classic).
+static const Theme THEME_MONOKAI = {
+    rgb565(39, 40, 34),        // bg           #272822
+    rgb565(32, 33, 28),        // header       #20211c
+    rgb565(248, 248, 242),     // headerText   #f8f8f2
+    rgb565(102, 217, 239),     // folder       #66d9ef (blue)
+    rgb565(248, 248, 242),     // file         #f8f8f2
+    rgb565(73, 72, 62),        // selBg        #49483e (selection)
+    rgb565(248, 248, 242),     // selFg        #f8f8f2
+    rgb565(117, 113, 94),      // dim          #75715e (comment)
+    rgb565(166, 226, 46),      // play         #a6e22e (green)
+    rgb565(248, 248, 242),     // npText       #f8f8f2
+    rgb565(174, 129, 255),     // volumeIcon   #ae81ff (purple)
+    rgb565(249, 38, 114),      // progressDot  #f92672 (pink)
+    rgb565(230, 219, 116),     // visMid       #e6db74 (yellow)
+    rgb565(249, 38, 114),      // visHigh      #f92672 (pink)
+    rgb565(32, 33, 28),        // npBg         #20211c
+    rgb565(73, 72, 62),        // visIdle      #49483e
+};
+// Inspired by the celebrated "Nord" theme (arcticicestudio).
+static const Theme THEME_NORD = {
+    rgb565(46, 52, 64),        // bg           #2e3440 (nord0)
+    rgb565(59, 66, 82),        // header       #3b4252 (nord1)
+    rgb565(236, 239, 244),     // headerText   #eceff4 (nord6)
+    rgb565(136, 192, 208),     // folder       #88c0d0 (nord8)
+    rgb565(216, 222, 233),     // file         #d8dee9 (nord4)
+    rgb565(67, 76, 94),        // selBg        #434c5e (nord2)
+    rgb565(236, 239, 244),     // selFg        #eceff4
+    rgb565(76, 86, 106),       // dim          #4c566a (nord3)
+    rgb565(163, 190, 140),     // play         #a3be8c (nord14)
+    rgb565(229, 233, 240),     // npText       #e5e9f0 (nord5)
+    rgb565(129, 161, 193),     // volumeIcon   #81a1c1 (nord9)
+    rgb565(180, 142, 173),     // progressDot  #b48ead (nord15)
+    rgb565(235, 203, 139),     // visMid       #ebcb8b (nord13)
+    rgb565(191, 97, 106),      // visHigh      #bf616a (nord11)
+    rgb565(59, 66, 82),        // npBg         #3b4252
+    rgb565(67, 76, 94),        // visIdle      #434c5e
+};
+// Inspired by the celebrated "Apprentice" theme (vim, romainl).
+static const Theme THEME_APPRENTICE = {
+    rgb565(38, 38, 38),        // bg           #262626
+    rgb565(28, 28, 28),        // header       #1c1c1c
+    rgb565(188, 188, 188),     // headerText   #bcbcbc
+    rgb565(135, 215, 215),     // folder       #87d7d7 (cyan)
+    rgb565(188, 188, 188),     // file         #bcbcbc
+    rgb565(48, 48, 48),        // selBg        #303030
+    rgb565(255, 255, 255),     // selFg        #ffffff
+    rgb565(108, 108, 108),     // dim          #6c6c6c (comment)
+    rgb565(135, 175, 135),     // play         #87af87 (green)
+    rgb565(255, 255, 255),     // npText       #ffffff
+    rgb565(95, 135, 175),      // volumeIcon   #5f87af (blue)
+    rgb565(175, 135, 175),     // progressDot  #af87af (purple)
+    rgb565(255, 255, 135),     // visMid       #ffff87 (yellow)
+    rgb565(255, 95, 95),       // visHigh      #ff5f5f (red)
+    rgb565(28, 28, 28),        // npBg         #1c1c1c
+    rgb565(48, 48, 48),        // visIdle      #303030
+};
+// Inspired by the classic "Amber on Black" CRT phosphor look.
+static const Theme THEME_AMBER = {
+    rgb565(0, 0, 0),           // bg           #000000
+    rgb565(16, 10, 0),         // header       #100a00 (faint amber tint)
+    rgb565(255, 176, 0),       // headerText   #ffb000 (amber phosphor)
+    rgb565(255, 176, 0),       // folder       #ffb000
+    rgb565(255, 176, 0),       // file         #ffb000
+    rgb565(64, 44, 0),         // selBg        #402c00
+    rgb565(0, 0, 0),           // selFg        black on amber
+    rgb565(128, 88, 0),        // dim          #805800
+    rgb565(255, 176, 0),       // play         #ffb000
+    rgb565(255, 176, 0),       // npText       #ffb000
+    rgb565(255, 176, 0),       // volumeIcon   #ffb000
+    rgb565(255, 200, 80),      // progressDot  lighter amber
+    rgb565(255, 176, 0),       // visMid       #ffb000
+    rgb565(255, 220, 128),     // visHigh      brightest amber
+    rgb565(0, 0, 0),           // npBg         #000000
+    rgb565(40, 28, 0),         // visIdle      #281c00
+};
+// Inspired by the celebrated "Zenburn" theme (jnurmine).
+static const Theme THEME_ZENBURN = {
+    rgb565(63, 63, 63),        // bg           #3f3f3f
+    rgb565(79, 79, 79),        // header       #4f4f4f
+    rgb565(220, 220, 204),     // headerText   #dcdccc
+    rgb565(147, 224, 227),     // folder       #93e0e3 (cyan)
+    rgb565(220, 220, 204),     // file         #dcdccc
+    rgb565(79, 79, 79),        // selBg        #4f4f4f
+    rgb565(255, 255, 255),     // selFg        #ffffff
+    rgb565(127, 159, 127),     // dim          #7f9f7f (comment)
+    rgb565(95, 127, 95),       // play         #5f7f5f (green)
+    rgb565(255, 255, 255),     // npText       #ffffff
+    rgb565(140, 208, 211),     // volumeIcon   #8cd0d3
+    rgb565(220, 140, 195),     // progressDot  #dc8cc3 (purple)
+    rgb565(240, 223, 175),     // visMid       #f0dfaf (yellow)
+    rgb565(204, 147, 147),     // visHigh      #cc9393 (red)
+    rgb565(63, 63, 63),        // npBg         #3f3f3f
+    rgb565(79, 79, 79),        // visIdle      #4f4f4f
+};
+// Inspired by the celebrated "Tomorrow Night" theme (Chris Kempson).
+static const Theme THEME_TOMORROW_NIGHT = {
+    rgb565(29, 31, 33),        // bg           #1d1f21
+    rgb565(40, 42, 46),        // header       #282a2e (current line)
+    rgb565(197, 200, 198),     // headerText   #c5c8c6
+    rgb565(138, 190, 183),     // folder       #8abeb7 (aqua)
+    rgb565(197, 200, 198),     // file         #c5c8c6
+    rgb565(55, 59, 65),        // selBg        #373b41 (selection)
+    rgb565(197, 200, 198),     // selFg        #c5c8c6
+    rgb565(150, 152, 150),     // dim          #969896 (comment)
+    rgb565(181, 189, 104),     // play         #b5bd68 (green)
+    rgb565(197, 200, 198),     // npText       #c5c8c6
+    rgb565(129, 162, 190),     // volumeIcon   #81a2be (blue)
+    rgb565(178, 148, 187),     // progressDot  #b294bb (purple)
+    rgb565(240, 198, 116),     // visMid       #f0c674 (yellow)
+    rgb565(204, 102, 102),     // visHigh      #cc6666 (red)
+    rgb565(40, 42, 46),        // npBg         #282a2e
+    rgb565(55, 59, 65),        // visIdle      #373b41
+};
+
 // All available themes, cycled from Settings -> Theme; Ember is always the
 // default at boot (index 0), regardless of what's added after it.
-static const Theme* const THEME_LIST[] = { &THEME_EMBER, &THEME_90S_SWEATER, &THEME_AQUA, &THEME_HONEY, &THEME_MOODY, &THEME_TERMINAL_GREEN, &THEME_TOKYO_NIGHT, &THEME_DRACULA, &THEME_GRUVBOX, &THEME_CATPPUCCIN };
-static const char* THEME_LABELS[] = { "Ember", "90's Sweater", "Aqua", "Honey", "Moody", "Terminal Green", "Tokyo Night", "Dracula", "Gruvbox", "Catppuccin" };
+static const Theme* const THEME_LIST[] = { &THEME_EMBER, &THEME_90S_SWEATER, &THEME_AQUA, &THEME_HONEY, &THEME_MOODY, &THEME_TERMINAL_GREEN, &THEME_TOKYO_NIGHT, &THEME_DRACULA, &THEME_GRUVBOX, &THEME_CATPPUCCIN, &THEME_ROSE_PINE, &THEME_MONOKAI, &THEME_NORD, &THEME_APPRENTICE, &THEME_AMBER, &THEME_ZENBURN, &THEME_TOMORROW_NIGHT };
+static const char* THEME_LABELS[] = { "Ember", "90's Sweater", "Aqua", "Honey", "Moody", "Terminal Green", "Tokyo Night", "Dracula", "Gruvbox", "Catppuccin", "Rosé Pine", "Monokai", "Nord", "Apprentice", "Amber on Black", "Zenburn", "Tomorrow Night" };
 static const int THEME_COUNT = sizeof(THEME_LIST) / sizeof(THEME_LIST[0]);
 
 // User themes loaded from /themes/*.json on SD at boot (see loadCustomThemes()
@@ -375,7 +509,16 @@ static int settingThemeIdx = 0;   // default Ember (THEME_LIST[0])
 static const char* onOffLabels[] = { "Non", "Oui" };
 static bool settingScreenshotsEnabled = false;
 
-static const int SETTINGS_COUNT = 5;
+// Cover toggle: hide the album-art box so the rest of the Now Playing UI
+// (text, progress bar, visualizer) spans the full screen width.
+static bool settingShowCover = true;
+
+// Now Playing small-visualizer style.
+enum VisStyle { VIS_BARS_LED, VIS_WAVE, VIS_SPECTRUM, VIS_CHANNELS, VIS_STYLE_COUNT };
+static const char* visStyleLabels[VIS_STYLE_COUNT] = { "Barres", "Vagues", "Spectre", "Canaux" };
+static VisStyle settingVisStyle = VIS_BARS_LED;
+
+static const int SETTINGS_COUNT = 7;
 static int settingsCursor = 0;
 
 // Rows visible at once in the settings box -- SETTINGS_COUNT no longer fits
@@ -398,12 +541,15 @@ static void loadSettings() {
     albumEndMode = (AlbumEndMode)settingsPrefs.getInt("albumEnd", ALBUM_STOP);
     settingThemeIdx = settingsPrefs.getInt("themeIdx", 0);
     settingScreenshotsEnabled = settingsPrefs.getBool("screenshots", false);
+    settingShowCover = settingsPrefs.getBool("showCover", true);
+    settingVisStyle = (VisStyle)settingsPrefs.getInt("visStyle", 0);
     settingsPrefs.end();
 
     if (settingBacklightIdx < 0 || settingBacklightIdx >= BACKLIGHT_COUNT) settingBacklightIdx = BACKLIGHT_COUNT - 1;
     if (settingScreenOffIdx < 0 || settingScreenOffIdx >= SCREEN_OFF_COUNT) settingScreenOffIdx = 2;
     if (albumEndMode < 0 || albumEndMode >= ALBUM_END_MODE_COUNT) albumEndMode = ALBUM_STOP;
     if (settingThemeIdx < 0) settingThemeIdx = 0;   // re-clamped against totalThemeCount() once custom themes load
+    if (settingVisStyle < 0 || settingVisStyle >= VIS_STYLE_COUNT) settingVisStyle = VIS_BARS_LED;
 }
 
 // Called after every settings change (see cycleSetting()) -- infrequent,
@@ -415,11 +561,18 @@ static void saveSettings() {
     settingsPrefs.putInt("albumEnd", (int)albumEndMode);
     settingsPrefs.putInt("themeIdx", settingThemeIdx);
     settingsPrefs.putBool("screenshots", settingScreenshotsEnabled);
+    settingsPrefs.putBool("showCover", settingShowCover);
+    settingsPrefs.putInt("visStyle", (int)settingVisStyle);
     settingsPrefs.end();
 }
 
 static bool screenIsOff = false;
 static unsigned long lastInputTime = 0;
+
+// Recomputes the Now Playing layout (text column, progress bar, visualizer
+// sprites) from the current cover setting. Defined below, in the visualizer
+// section, where the sprite state lives.
+static void applyCoverLayout();
 
 // ID3 metadata for the currently playing track (populated via RegisterMetadataCB)
 static char curArtist[96] = "";
@@ -460,6 +613,19 @@ static void pushVisLevel(float level, float bassRatio) {
     visBassRatio[VIS_HISTORY - 1] = bassRatio;
 }
 
+// Per-channel (L/R) levels for the "Canaux" visualizer style -- same chunk
+// cadence as pushVisLevel, fed from AudioOutputM5Speaker::flush().
+static float visHistL[VIS_HISTORY] = {0};
+static float visHistR[VIS_HISTORY] = {0};
+static void pushVisStereo(float l, float r) {
+    for (int i = 0; i < VIS_HISTORY - 1; i++) {
+        visHistL[i] = visHistL[i + 1];
+        visHistR[i] = visHistR[i + 1];
+    }
+    visHistL[VIS_HISTORY - 1] = l;
+    visHistR[VIS_HISTORY - 1] = r;
+}
+
 // Raw stereo PCM snapshot for the full-screen FFT visualizer (see fft_t /
 // drawFullVis below) -- separate from the amplitude-history path above,
 // which only keeps a per-chunk scalar and throws the samples away. Captured
@@ -484,6 +650,8 @@ public:
             _tri_buffer[_tri_index][_tri_buffer_index+1] = sample[1];
             _tri_buffer_index += 2;
             _visSum += abs((int)sample[0]) + abs((int)sample[1]);
+            _visSumL += abs((int)sample[0]);
+            _visSumR += abs((int)sample[1]);
             _visCount += 2;
 
             // Cheap bass/treble split (no FFT): a one-pole low-pass filter tracks
@@ -529,7 +697,17 @@ public:
 
             pushVisLevel(boosted, bassRatio);
             lastBassEnvelope = (_visBassSum / (_visCount / 2)) / 32768.0f;
+
+            float rawL = (float)_visSumL / (_visCount / 2) / 32768.0f;
+            float boostL = sqrtf(rawL * 2.0f);
+            if (boostL > 1.0f) boostL = 1.0f;
+            float rawR = (float)_visSumR / (_visCount / 2) / 32768.0f;
+            float boostR = sqrtf(rawR * 2.0f);
+            if (boostR > 1.0f) boostR = 1.0f;
+            pushVisStereo(boostL, boostR);
+
             _visSum = 0; _visCount = 0;
+            _visSumL = 0; _visSumR = 0;
             _visBassSum = 0.0f; _visTrebleSum = 0.0f;
         }
     }
@@ -541,6 +719,7 @@ protected:
     int16_t _tri_buffer[3][tri_buf_size];
     size_t _tri_buffer_index = 0, _tri_index = 0;
     uint32_t _visSum = 0, _visCount = 0;
+    uint32_t _visSumL = 0, _visSumR = 0;
     float _bassLP = 0.0f;
     float _visBassSum = 0.0f, _visTrebleSum = 0.0f;
 };
@@ -790,6 +969,7 @@ static void drawArtRegion();   // defined below; blits coverSprite to the screen
 // the animation resumes at the same 160ms cadence rather than jumping ahead.
 static void turntableTick() {
     static unsigned long last = 0;
+    if (!settingShowCover) return;   // art box hidden -- nothing to animate
     if (uiMode != MODE_NOWPLAYING || !turntableSpriteOk) return;
     if (coverHasArt && !preferTurntable) return;
     if (playState != PLAYING) return;
@@ -920,6 +1100,7 @@ static void loadAlbumArt(const char* path) {
 // blits the cached cover (or placeholder); a future audio visualizer can render live
 // here instead, without touching the loading/caching logic above.
 static void drawArtRegion() {
+    if (!settingShowCover) return;   // cover off: full-width text layout
     bool showTurntable = !coverHasArt || preferTurntable;
     if (showTurntable && turntableSpriteOk) turntableSprite->pushSprite(COVER_X, COVER_Y);
     else if (!showTurntable && coverSpriteOk) coverSprite->pushSprite(COVER_X, COVER_Y);
@@ -1428,9 +1609,11 @@ static String trimToWidth(LovyanGFX &d, const String &text, int maxW) {
 // Now Playing text column layout, needed by the volume meter below (it starts
 // directly above the artist text) as well as drawNowPlaying() itself. Fixed
 // independently of COVER_Y/COVER_H so repositioning the art box doesn't move it.
-static const int NP_TEXT_X = 120;
+static int NP_TEXT_X = 120;   // 120 next to the art box, 6 when the cover is hidden (full width)
 static const int NP_TEXT_Y = 22;
 static const int NP_LINE_H = 18;
+// Progress bar geometry (under the art box in cover mode, full width without).
+static int progX = 6, progW = 105;
 
 // ---------- Battery + volume meters (top-right, both screens) ----------
 static const int BATT_W = 21, BATT_H = 10, BATT_NUB_W = 2, BATT_NUB_H = 6, BATT_MARGIN = 4;
@@ -1723,13 +1906,15 @@ static void drawSettingsBox() {
     d.setCursor(boxX + 6, boxY + (titleH - d.fontHeight()) / 2);
     d.print("Réglages");
 
-    const char* names[SETTINGS_COUNT]  = { "Luminosité", "Veille écran", "Fin d'album", "Thème", "Captures" };
+    const char* names[SETTINGS_COUNT]  = { "Luminosité", "Veille écran", "Fin d'album", "Thème", "Captures", "Pochette", "Visualiseur" };
     String values[SETTINGS_COUNT] = {
         backlightLabels[settingBacklightIdx],
         screenOffLabels[settingScreenOffIdx],
         albumEndLabels[albumEndMode],
         themeLabelAt(settingThemeIdx),
         onOffLabels[settingScreenshotsEnabled ? 1 : 0],
+        onOffLabels[settingShowCover ? 1 : 0],
+        visStyleLabels[settingVisStyle],
     };
     for (int row = 0; row < SETTINGS_VISIBLE; row++) {
         int i = settingsScroll + row;
@@ -1806,6 +1991,17 @@ static void cycleSetting(int idx) {
             return;
         case 4:
             settingScreenshotsEnabled = !settingScreenshotsEnabled;
+            break;
+        case 5:
+            // Cover on/off: the whole Now Playing layout changes, so repaint
+            // the full backdrop via drawSettings() below.
+            settingShowCover = !settingShowCover;
+            applyCoverLayout();
+            saveSettings();
+            drawSettings();
+            return;
+        case 6:
+            settingVisStyle = (VisStyle)((settingVisStyle + 1) % VIS_STYLE_COUNT);
             break;
     }
     saveSettings();
@@ -1892,21 +2088,21 @@ static void drawProgressBar() {
     if (frac > 1.0f) frac = 1.0f;
 
     int lineY = PROG_DOT_R + 1;   // local y within the sprite/clear-rect
-    int dotX = (int)(frac * COVER_W);
+    int dotX = (int)(frac * progW);
 
     if (progSpriteOk) {
         progSprite->fillSprite(COL_NP_BG);
-        progSprite->drawFastHLine(0, lineY, COVER_W, COL_DIM);
+        progSprite->drawFastHLine(0, lineY, progW, COL_DIM);
         progSprite->fillCircle(dotX, lineY, PROG_DOT_R, COL_PROGRESS);
-        progSprite->pushSprite(COVER_X, PROG_Y - PROG_DOT_R - 1);
+        progSprite->pushSprite(progX, PROG_Y - PROG_DOT_R - 1);
         return;
     }
 
     // Fallback if the sprite couldn't be allocated -- same visual, may flicker.
     auto &d = M5Cardputer.Display;
-    d.fillRect(COVER_X, PROG_Y - PROG_DOT_R - 1, COVER_W, PROG_SPRITE_H, COL_NP_BG);
-    d.drawFastHLine(COVER_X, PROG_Y, COVER_W, COL_DIM);
-    d.fillCircle(COVER_X + dotX, PROG_Y, PROG_DOT_R, COL_PROGRESS);
+    d.fillRect(progX, PROG_Y - PROG_DOT_R - 1, progW, PROG_SPRITE_H, COL_NP_BG);
+    d.drawFastHLine(progX, PROG_Y, progW, COL_DIM);
+    d.fillCircle(progX + dotX, PROG_Y, PROG_DOT_R, COL_PROGRESS);
 }
 
 // Amplitude-history visualizer, bottom-right. Composited into a small sprite
@@ -1919,18 +2115,51 @@ static M5Canvas *visSprite = nullptr;
 static bool visSpriteOk = false;
 static int visLeft = 0, visTop = 0;
 
-// A column of discrete LED-style segments instead of one continuous bar,
-// colored by level tier (COL_PLAY/COL_VIS_MID/COL_VIS_HIGH) like a classic
-// hardware VU meter. Used to be one of two selectable styles (Settings ->
-// Visualizer); the plain solid-bar style was removed in favor of this one,
-// so the setting itself went away too.
+// Recomputes the Now Playing layout from the cover setting: text column
+// position, progress bar geometry, and the visualizer strip. The two sprites
+// are sized at creation, so a geometry change recreates them (only happens
+// on a Settings change or at boot -- never during playback).
+static void applyCoverLayout() {
+    auto &d = M5Cardputer.Display;
+    NP_TEXT_X = settingShowCover ? 120 : 6;
+    progX = settingShowCover ? COVER_X : 6;
+    progW = settingShowCover ? COVER_W : (d.width() - 12);
+
+    if (visSprite)  { delete visSprite;  visSprite  = nullptr; }
+    if (progSprite) { delete progSprite; progSprite = nullptr; }
+    visSpriteOk = progSpriteOk = false;
+
+    int visAvailW = settingShowCover ? (d.width() - VIS_MARGIN - NP_TEXT_X)
+                                     : (d.width() - 2 * VIS_MARGIN);
+    int pitch = visAvailW / VIS_BARS;
+    VIS_BAR_W = pitch - VIS_BAR_GAP;
+    if (VIS_BAR_W < 1) VIS_BAR_W = 1;
+    int visTotalW = VIS_BARS * VIS_BAR_W + (VIS_BARS - 1) * VIS_BAR_GAP;
+    visLeft = settingShowCover ? NP_TEXT_X : VIS_MARGIN;
+    visTop  = d.height() - VIS_MARGIN - VIS_MAX_H;
+
+    visSprite = new M5Canvas(&d);
+    visSprite->setPsram(false);
+    visSprite->setColorDepth(16);
+    visSpriteOk = (visSprite->createSprite(visTotalW, VIS_MAX_H) != nullptr);
+    if (!visSpriteOk) Serial.println("visualizer sprite alloc failed");
+
+    progSprite = new M5Canvas(&d);
+    progSprite->setPsram(false);
+    progSprite->setColorDepth(16);
+    progSpriteOk = (progSprite->createSprite(progW, PROG_SPRITE_H) != nullptr);
+    if (!progSpriteOk) Serial.println("progress sprite alloc failed");
+}
+
+// The Now Playing visualizer strip supports several selectable styles
+// (Settings -> Visualiseur). All styles fill visSprite and are blitted by
+// drawVisualizer() below.
 static const int VIS_SEG_H = 4, VIS_SEG_GAP = 1;
 static const int VIS_SEG_COUNT = VIS_MAX_H / (VIS_SEG_H + VIS_SEG_GAP);
 
-// Bars are bottom-anchored and grow upward (taller = louder), like a classic
-// hardware EQ display, not top-down.
-static void drawVisualizer() {
-    if (!visSpriteOk) return;
+// Style 0 "Barres": discrete LED-style segments, colored by level tier like
+// a classic hardware VU meter (the original EMBER look).
+static void drawVisBars() {
     visSprite->fillSprite(COL_NP_BG);
     for (int i = 0; i < VIS_BARS; i++) {
         float lvl = visHistory[i];
@@ -1949,6 +2178,94 @@ static void drawVisualizer() {
             uint16_t litColor = tier <= 0.6f ? COL_PLAY : tier <= 0.85f ? COL_VIS_MID : COL_VIS_HIGH;
             visSprite->fillRect(bx, y, VIS_BAR_W, VIS_SEG_H, lit ? litColor : COL_VIS_IDLE);
         }
+    }
+}
+
+// Style 1 "Vagues": an oscilloscope trace of the raw stereo waveform, tinted
+// by amplitude tier (a more modern look than the bars).
+static void drawVisWave() {
+    int w = visSprite->width();
+    int h = VIS_MAX_H;
+    int mid = h / 2;
+    visSprite->fillSprite(COL_NP_BG);
+    visSprite->drawFastHLine(0, mid, w, COL_VIS_IDLE);   // center axis
+
+    if (w < 2) return;
+    int start = VISRAW_FRAMES * 2 - w * 2;   // last w stereo frames
+    if (start < 0) start = 0;
+    int step = (VISRAW_FRAMES * 2 - start) / w;   // >=2; 2 = one frame per column
+    if (step < 2) step = 2;
+
+    int prevX = -1, prevY = mid;
+    for (int x = 0; x < w; x++) {
+        int32_t l = visRawBuf[start + x * step];
+        int32_t r = (start + x * step + 1 < VISRAW_FRAMES * 2) ? visRawBuf[start + x * step + 1] : l;
+        int32_t sum = l + r;                     // -65536..65536
+        int y = mid - (int)((sum * (int64_t)(h / 2 - 1)) / 65536);
+        if (y < 0) y = 0; else if (y >= h) y = h - 1;
+        uint32_t mag = (uint32_t)abs(sum) / 2;   // 0..32768
+        uint16_t col = mag > 22000 ? COL_VIS_HIGH : mag > 10000 ? COL_VIS_MID : COL_PLAY;
+        if (prevX >= 0) visSprite->drawLine(prevX, prevY, x, y, col);
+        prevX = x; prevY = y;
+    }
+}
+
+// Style 2 "Spectre": a mini real-FFT spectrum (same fft_t as the full-screen
+// visualizer), log-spaced bins, bottom-anchored tier-colored bars.
+static void drawVisSpectrum() {
+    int h = VIS_MAX_H;
+    visSprite->fillSprite(COL_NP_BG);
+    fft.exec(visRawBuf);
+
+    for (int i = 0; i < VIS_BARS; i++) {
+        int lo = (i == 0) ? 0 : (int)(127.0f * powf((float)i / VIS_BARS, 2.2f));
+        int hi = (int)(127.0f * powf((float)(i + 1) / VIS_BARS, 2.2f));
+        if (hi <= lo) hi = lo + 1;
+        uint32_t acc = 0;
+        for (int b = lo; b < hi; b++) acc += fft.get(b);
+        uint32_t avg = acc / (uint32_t)(hi - lo);
+        int barH = (int)((avg * (uint32_t)h) >> 18);   // same scaling as drawFullVisSpectrum
+        if (barH > h) barH = h;
+        if (barH < 1) barH = 1;
+
+        int bx = i * (VIS_BAR_W + VIS_BAR_GAP);
+        float tier = (float)(i + 1) / VIS_BARS;
+        uint16_t col = tier <= 0.6f ? COL_PLAY : tier <= 0.85f ? COL_VIS_MID : COL_VIS_HIGH;
+        visSprite->fillRect(bx, h - barH, VIS_BAR_W, barH, col);
+    }
+}
+
+// Style 3 "Canaux": two horizontal stereo VU bars (L over R), tier-colored.
+static void drawVisChannels() {
+    int w = visSprite->width();
+    int h = VIS_MAX_H;
+    const int gap = 4;
+    int barH = (h - gap) / 2;
+    if (barH < 2) barH = 2;
+    visSprite->fillSprite(COL_NP_BG);
+
+    float lvl[2] = { visHistL[VIS_HISTORY - 1], visHistR[VIS_HISTORY - 1] };
+    for (int ch = 0; ch < 2; ch++) {
+        float l = lvl[ch];
+        if (l < 0.0f) l = 0.0f;
+        if (l > 1.0f) l = 1.0f;
+        int y = ch * (barH + gap);
+        int lit = (int)(l * w);
+        visSprite->fillRect(0, y, w, barH, COL_VIS_IDLE);         // track
+        if (lit > 0) {
+            uint16_t col = l > 0.75f ? COL_VIS_HIGH : l > 0.45f ? COL_VIS_MID : COL_PLAY;
+            visSprite->fillRect(0, y, lit, barH, col);            // fill
+        }
+    }
+}
+
+static void drawVisualizer() {
+    if (!visSpriteOk) return;
+    switch (settingVisStyle) {
+        case VIS_WAVE:      drawVisWave();      break;
+        case VIS_SPECTRUM:  drawVisSpectrum();  break;
+        case VIS_CHANNELS:  drawVisChannels();  break;
+        default:            drawVisBars();      break;
     }
     visSprite->pushSprite(visLeft, visTop);
 }
@@ -2520,26 +2837,9 @@ void setup() {
     turntableSpriteOk = (turntableSprite->createSprite(COVER_W, COVER_H) != nullptr);
     if (!turntableSpriteOk) Serial.println("turntable sprite alloc failed");
 
-    // Span the same left margin as the text column (NP_TEXT_X) out to the same
-    // right margin the battery/volume meters use, dividing that span evenly
-    // across VIS_BARS bars.
-    int visAvailW = d.width() - VIS_MARGIN - NP_TEXT_X;
-    int pitch = visAvailW / VIS_BARS;
-    VIS_BAR_W = pitch - VIS_BAR_GAP;
-    int visTotalW = VIS_BARS * VIS_BAR_W + (VIS_BARS - 1) * VIS_BAR_GAP;
-    visLeft = NP_TEXT_X;
-    visTop  = d.height() - VIS_MARGIN - VIS_MAX_H;
-    visSprite = new M5Canvas(&d);
-    visSprite->setPsram(false);
-    visSprite->setColorDepth(16);
-    visSpriteOk = (visSprite->createSprite(visTotalW, VIS_MAX_H) != nullptr);
-    if (!visSpriteOk) Serial.println("visualizer sprite alloc failed");
-
-    progSprite = new M5Canvas(&d);
-    progSprite->setPsram(false);
-    progSprite->setColorDepth(16);
-    progSpriteOk = (progSprite->createSprite(COVER_W, PROG_SPRITE_H) != nullptr);
-    if (!progSpriteOk) Serial.println("progress sprite alloc failed");
+    // Text column, progress bar and visualizer geometry all depend on the
+    // cover setting (full-width layout when the cover is hidden).
+    applyCoverLayout();
 
     out = new AudioOutputM5Speaker(&M5Cardputer.Speaker, 0);
     out->begin();

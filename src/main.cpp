@@ -219,10 +219,89 @@ static const Theme THEME_TERMINAL_GREEN = {
     rgb565(0, 0, 0),           // visIdle
 };
 
+// Inspired by the celebrated "Tokyo Night" VS Code theme (enkia).
+static const Theme THEME_TOKYO_NIGHT = {
+    rgb565(26, 27, 38),        // bg           #1a1b26
+    rgb565(22, 22, 30),        // header       #16161e (statusline)
+    rgb565(192, 202, 245),     // headerText   #c0caf5
+    rgb565(125, 207, 255),     // folder       #7dcfff (cyan)
+    rgb565(192, 202, 245),     // file         #c0caf5
+    rgb565(51, 70, 124),       // selBg        #33467c (selection)
+    rgb565(192, 202, 245),     // selFg        #c0caf5
+    rgb565(86, 95, 137),       // dim          #565f89 (comment)
+    rgb565(158, 206, 106),     // play         #9ece6a (green)
+    rgb565(192, 202, 245),     // npText       #c0caf5
+    rgb565(122, 162, 247),     // volumeIcon   #7aa2f7 (blue)
+    rgb565(187, 154, 247),     // progressDot  #bb9af7 (magenta)
+    rgb565(224, 175, 104),     // visMid       #e0af68 (yellow)
+    rgb565(247, 118, 142),     // visHigh      #f7768e (red)
+    rgb565(22, 22, 30),        // npBg         #16161e
+    rgb565(41, 46, 66),        // visIdle      #292e42 (line highlight)
+};
+// Inspired by the celebrated "Dracula" theme (Zeno Rocha).
+static const Theme THEME_DRACULA = {
+    rgb565(40, 42, 54),        // bg           #282a36
+    rgb565(33, 34, 44),        // header       #21222c
+    rgb565(248, 248, 242),     // headerText   #f8f8f2
+    rgb565(139, 233, 253),     // folder       #8be9fd (cyan)
+    rgb565(248, 248, 242),     // file         #f8f8f2
+    rgb565(68, 71, 90),        // selBg        #44475a (current line)
+    rgb565(248, 248, 242),     // selFg        #f8f8f2
+    rgb565(98, 114, 164),      // dim          #6272a4 (comment)
+    rgb565(80, 250, 123),      // play         #50fa7b (green)
+    rgb565(248, 248, 242),     // npText       #f8f8f2
+    rgb565(189, 147, 249),     // volumeIcon   #bd93f9 (purple)
+    rgb565(255, 121, 198),     // progressDot  #ff79c6 (pink)
+    rgb565(255, 184, 108),     // visMid       #ffb86c (orange)
+    rgb565(255, 85, 85),       // visHigh      #ff5555 (red)
+    rgb565(33, 34, 44),        // npBg         #21222c
+    rgb565(68, 71, 90),        // visIdle      #44475a
+};
+
+// Inspired by the celebrated "Gruvbox" theme (morhetz).
+static const Theme THEME_GRUVBOX = {
+    rgb565(40, 42, 40),        // bg           #282828
+    rgb565(29, 32, 33),        // header       #1d2021 (bg0_hard)
+    rgb565(235, 219, 178),     // headerText   #ebdbb2 (fg1)
+    rgb565(254, 128, 25),      // folder       #fe8019 (orange)
+    rgb565(235, 219, 178),     // file         #ebdbb2 (fg1)
+    rgb565(80, 73, 69),        // selBg        #504945 (bg2)
+    rgb565(251, 241, 199),     // selFg        #fbf1c7 (fg0)
+    rgb565(168, 153, 132),     // dim          #a89984 (fg4/gray)
+    rgb565(184, 187, 38),      // play         #b8bb26 (green)
+    rgb565(251, 241, 199),     // npText       #fbf1c7 (fg0)
+    rgb565(131, 165, 152),     // volumeIcon   #83a598 (blue)
+    rgb565(211, 134, 155),     // progressDot  #d3869b (purple)
+    rgb565(250, 189, 47),      // visMid       #fabd2f (yellow)
+    rgb565(251, 73, 52),       // visHigh      #fb4934 (red)
+    rgb565(29, 32, 33),        // npBg         #1d2021 (bg0_hard)
+    rgb565(80, 73, 69),        // visIdle      #504945 (bg2)
+};
+
+// Inspired by the celebrated "Catppuccin" theme (Mocha flavor, catppuccin.com).
+static const Theme THEME_CATPPUCCIN = {
+    rgb565(30, 30, 46),        // bg           #1e1e2e (base)
+    rgb565(24, 24, 37),        // header       #181825 (mantle)
+    rgb565(205, 214, 244),     // headerText   #cdd6f4 (text)
+    rgb565(137, 220, 235),     // folder       #89dceb (sky -- the signature Catppuccin folder color)
+    rgb565(205, 214, 244),     // file         #cdd6f4 (text)
+    rgb565(49, 50, 68),        // selBg        #313244 (surface0)
+    rgb565(205, 214, 244),     // selFg        #cdd6f4 (text)
+    rgb565(108, 112, 134),     // dim          #6c7086 (overlay0)
+    rgb565(166, 227, 161),     // play         #a6e3a1 (green)
+    rgb565(205, 214, 244),     // npText       #cdd6f4 (text)
+    rgb565(137, 180, 250),     // volumeIcon   #89b4fa (blue)
+    rgb565(203, 166, 247),     // progressDot  #cba6f7 (mauve)
+    rgb565(249, 226, 175),     // visMid       #f9e2af (yellow)
+    rgb565(243, 139, 168),     // visHigh      #f38ba8 (red)
+    rgb565(24, 24, 37),        // npBg         #181825 (mantle)
+    rgb565(49, 50, 68),        // visIdle      #313244 (surface0)
+};
+
 // All available themes, cycled from Settings -> Theme; Ember is always the
 // default at boot (index 0), regardless of what's added after it.
-static const Theme* const THEME_LIST[] = { &THEME_EMBER, &THEME_90S_SWEATER, &THEME_AQUA, &THEME_HONEY, &THEME_MOODY, &THEME_TERMINAL_GREEN };
-static const char* THEME_LABELS[] = { "Ember", "90's Sweater", "Aqua", "Honey", "Moody", "Terminal Green" };
+static const Theme* const THEME_LIST[] = { &THEME_EMBER, &THEME_90S_SWEATER, &THEME_AQUA, &THEME_HONEY, &THEME_MOODY, &THEME_TERMINAL_GREEN, &THEME_TOKYO_NIGHT, &THEME_DRACULA, &THEME_GRUVBOX, &THEME_CATPPUCCIN };
+static const char* THEME_LABELS[] = { "Ember", "90's Sweater", "Aqua", "Honey", "Moody", "Terminal Green", "Tokyo Night", "Dracula", "Gruvbox", "Catppuccin" };
 static const int THEME_COUNT = sizeof(THEME_LIST) / sizeof(THEME_LIST[0]);
 
 // User themes loaded from /themes/*.json on SD at boot (see loadCustomThemes()

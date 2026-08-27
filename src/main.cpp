@@ -2145,7 +2145,11 @@ static void drawVisWave() {
     for (int x = 0; x < w; x++) {
         int32_t l = visRawBuf[start + x * step];
         int32_t r = (start + x * step + 1 < VISRAW_FRAMES * 2) ? visRawBuf[start + x * step + 1] : l;
-        int32_t sum = l + r;                     // -65536..65536
+        // 1.6x gain (clamped): typical music sits far below full-scale, so
+        // the raw waveform looked tiny next to the compressed bars -- boost
+        // it so the trace actually fills the strip.
+        int32_t sum = (int32_t)((l + r) * 1.6f);
+        if (sum > 65536) sum = 65536; else if (sum < -65536) sum = -65536;
         int y = mid - (int)((sum * (int64_t)(h / 2 - 1)) / 65536);
         if (y < 0) y = 0; else if (y >= h) y = h - 1;
         uint32_t mag = (uint32_t)abs(sum) / 2;   // 0..32768
@@ -2184,7 +2188,7 @@ static void drawVisSpectrum() {
 static void drawVisChannels() {
     int w = visSprite->width();
     int h = VIS_MAX_H;
-    const int gap = 4;
+    const int gap = 2;             // thin gap -> both bars nearly fill the strip
     int barH = (h - gap) / 2;
     if (barH < 2) barH = 2;
     visSprite->fillSprite(COL_NP_BG);
@@ -2220,8 +2224,10 @@ static void drawVisPeaks() {
         float tier = (float)(i + 1) / VIS_BARS;
         uint16_t col = tier <= 0.6f ? COL_PLAY : tier <= 0.85f ? COL_VIS_MID : COL_VIS_HIGH;
 
+        // Fast attack, slower release: the peak snaps up instantly and
+        // falls back gently (classic modern-EQ feel).
         if (barH > visPeaks[i]) visPeaks[i] = barH;         // peak hold
-        else if (visPeaks[i] > 1.0f) visPeaks[i] -= 0.7f;   // smooth fall
+        else if (visPeaks[i] > 1.0f) visPeaks[i] -= 0.45f;  // slower, smoother fall
 
         visSprite->fillRect(bx, h - barH, VIS_BAR_W, barH, col);
         int py = h - (int)visPeaks[i];
@@ -2231,7 +2237,7 @@ static void drawVisPeaks() {
 }
 
 // Style 5 "Pulsation": concentric rings that swell with the bass envelope,
-// colored by intensity -- a calm, modern orb look.
+// colored by intensity -- a calm, modern orb look, scaled to the full strip.
 static float visPulse = 0.0f;
 static void drawVisPulse() {
     int w = visSprite->width();
@@ -2241,24 +2247,27 @@ static void drawVisPulse() {
 
     float env = lastBassEnvelope;
     if (env > 0.6f) env = 0.6f;
-    visPulse += 0.22f * (env - visPulse);          // smooth attack/decay
+    // Fast attack, slower release: the ring snaps out on a bass hit and
+    // lingers on the way back -- bigger and punchier than a symmetric fade.
+    visPulse += (env > visPulse ? 0.55f : 0.10f) * (env - visPulse);
 
-    int r1 = 2 + (int)(visPulse * 24.0f);          // 2..~16 px
-    int maxR = h / 2 - 2;
+    int maxR = h / 2 - 1;                          // reach the strip edges
+    int r1 = 2 + (int)(visPulse * ((maxR - 2) * 1.9f));
     if (r1 > maxR) r1 = maxR;
-    int r2 = r1 - 4;
+    int r2 = r1 - 5;
     if (r2 < 1) r2 = 1;
 
     uint16_t col = visPulse > 0.30f ? COL_VIS_HIGH : visPulse > 0.12f ? COL_VIS_MID : COL_PLAY;
     if (r2 > 1) visSprite->drawCircle(cx, cy, r2, COL_VIS_IDLE);   // inner ring
     visSprite->drawCircle(cx, cy, r1, col);                        // outer ring
-    visSprite->fillCircle(cx, cy, 2, col);                         // core
-    // faint stereo wings at the edges for context
-    int wing = (int)(visHistL[VIS_HISTORY - 1] * 8.0f);
-    if (wing > 6) wing = 6;
+    if (r1 > 1) visSprite->drawCircle(cx, cy, r1 - 1, col);        // 2px thick
+    visSprite->fillCircle(cx, cy, 3, col);                         // core
+    // stereo wings at the edges, taller so they read at full strip height
+    int wing = (int)(visHistL[VIS_HISTORY - 1] * 12.0f);
+    if (wing > 12) wing = 12;
     if (wing > 0) visSprite->fillRect(0, cy - wing / 2, 2, wing, COL_DIM);
-    int wingR = (int)(visHistR[VIS_HISTORY - 1] * 8.0f);
-    if (wingR > 6) wingR = 6;
+    int wingR = (int)(visHistR[VIS_HISTORY - 1] * 12.0f);
+    if (wingR > 12) wingR = 12;
     if (wingR > 0) visSprite->fillRect(w - 2, cy - wingR / 2, 2, wingR, COL_DIM);
 }
 

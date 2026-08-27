@@ -5,7 +5,7 @@
 
 A themeable MP3 / FLAC / WAV / AAC player firmware for the [M5Stack Cardputer ADV](https://shop.m5stack.com/products/m5stack-cardputer-adv-version-esp32-s3) (ESP32-S3). SD-card folder browsing, album art, custom color themes, and a couple of full-screen visualizers.
 
-> **Fork changes** — adds 4 built-in themes (Tokyo Night, Dracula, Gruvbox, Catppuccin) and translates the UI into French (Bibliothèque, Réglages, écran de lecture, messages).
+> **Fork changes** — adds 17 built-in themes, translates the UI into French, and shows **only the `Music` folder at the SD root** (it is created automatically on first boot; put your Artist → Album → Track tree inside it). Also adds a cover on/off setting and 4 Now Playing visualizer styles.
 
 
 <p float="left">

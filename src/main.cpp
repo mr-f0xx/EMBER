@@ -1201,6 +1201,13 @@ static bool loadDir() {
         int len = strlen(nm);
         if (nm[0] != '.' && (poolUsed + len + 1) < NAME_POOL_SIZE) {
             bool isDir = e.isDirectory();
+            // At the SD root, only the "Music" folder is shown -- everything
+            // else lives inside it (Artist -> Album -> Track as before).
+            if (depth == 0 && strcasecmp(nm, "Music") != 0) {
+                e.close();
+                e = dir.openNextFile();
+                continue;
+            }
             if (isDir || isAudioFile(nm)) {
                 nameOffset[entryCount] = poolUsed;
                 entryIsDir[entryCount] = isDir;
@@ -2854,6 +2861,11 @@ void setup() {
         return;
     }
     Serial.println("SD ok");
+
+    // The root only shows the Music folder -- create it if this is the
+    // first boot with this firmware, so there's always a place for the
+    // Artist -> Album -> Track tree.
+    if (!SD.exists("/Music")) SD.mkdir("/Music");
 
     // Now that SD is up, pull in any user themes and re-clamp the persisted
     // theme index against the real total (loadSettings() above only knew

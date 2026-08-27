@@ -34,6 +34,27 @@ A themeable MP3 / FLAC / WAV / AAC player firmware for the [M5Stack Cardputer AD
 - M5Stack Cardputer ADV (ESP32-S3, no PSRAM).
 - A microSD card for your music (and optionally custom themes — see below).
 
+## Flashing the prebuilt firmware
+
+`ember-themes.bin` (repo root) is a **merged image** — bootloader, partition
+table, and app in one file — flashable as-is at address `0x0`:
+
+```bash
+esptool.py --port COMx write_flash 0x0 ember-themes.bin
+```
+
+No-command-line option: open <https://espressif.github.io/esp-launchpad/> in a
+Chromium browser, pick ESP32-S3, address `0x0`, and paste the raw file URL
+(`https://raw.githubusercontent.com/<your-account>/EMBER/main/ember-themes.bin`)
+or select the downloaded file.
+
+The GitHub Actions build (every push and pull request) compiles the firmware,
+merges bootloader + partition table + app with esptool, and publishes the
+result as a downloadable artifact; every `v*` tag additionally creates a
+**Release** with the `.bin` attached. Note: `ember-cardputer-adv.bin` at the
+repo root is the ORIGINAL upstream EMBER firmware (no added themes) — flash
+`ember-themes.bin` for the Tokyo Night / Dracula / Gruvbox / Catppuccin build.
+
 ## Controls
 
 The Cardputer has no dedicated arrow keys — the punctuation cluster doubles as one: `;` `.` `,` `/` map to up/down/back/open.

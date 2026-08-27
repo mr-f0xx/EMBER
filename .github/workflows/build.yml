@@ -1,0 +1,57 @@
+name: Build firmware
+
+on:
+  push:
+    branches: [ main ]
+    tags: [ 'v*' ]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install PlatformIO
+        run: pip install -U platformio
+
+      - name: Build firmware
+        run: pio run
+
+      - name: Merge into single flashable image
+        run: |
+          pip install -q esptool
+          esptool --chip esp32-s3 merge_bin -o ember-themes.bin \
+            0x0 .pio/build/cardputer-adv/bootloader.bin \
+            0x8000 .pio/build/cardputer-adv/partitions.bin \
+            0x10000 .pio/build/cardputer-adv/firmware.bin
+          esptool --chip esp32-s3 image_info ember-themes.bin
+
+      - name: Upload firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ember-themes-firmware
+          path: ember-themes.bin
+          if-no-files-found: error
+
+  release:
+    # Attach the compiled .bin to a GitHub Release whenever a v* tag is pushed.
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: ember-themes-firmware
+
+      - name: Create release with firmware
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ember-themes.bin
+          generate_release_notes: true

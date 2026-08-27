@@ -25,17 +25,17 @@ jobs:
       - name: Merge into single flashable image
         run: |
           pip install -q esptool
-          esptool --chip esp32-s3 merge_bin -o ember-themes.bin \
+          esptool --chip esp32-s3 merge_bin -o EmberPlus.bin \
             0x0 .pio/build/cardputer-adv/bootloader.bin \
             0x8000 .pio/build/cardputer-adv/partitions.bin \
             0x10000 .pio/build/cardputer-adv/firmware.bin
-          esptool --chip esp32-s3 image_info ember-themes.bin
+          esptool --chip esp32-s3 image_info EmberPlus.bin
 
       - name: Upload firmware artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ember-themes-firmware
-          path: ember-themes.bin
+          name: ember-plus-firmware
+          path: EmberPlus.bin
           if-no-files-found: error
 
   release:
@@ -48,10 +48,10 @@ jobs:
     steps:
       - uses: actions/download-artifact@v4
         with:
-          name: ember-themes-firmware
+          name: ember-plus-firmware
 
       - name: Create release with firmware
         uses: softprops/action-gh-release@v2
         with:
-          files: ember-themes.bin
+          files: EmberPlus.bin
           generate_release_notes: true

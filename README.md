@@ -5,7 +5,7 @@
 
 A themeable MP3 / FLAC / WAV / AAC player firmware for the [M5Stack Cardputer ADV](https://shop.m5stack.com/products/m5stack-cardputer-adv-version-esp32-s3) (ESP32-S3). SD-card folder browsing, album art, custom color themes, and a couple of full-screen visualizers.
 
-> **Fork changes** — adds 17 built-in themes, translates the UI into French, and shows **only the `Music` folder at the SD root** (it is created automatically on first boot; put your Artist → Album → Track tree inside it). Also adds a cover on/off setting and 4 Now Playing visualizer styles.
+> **Ember+** — this fork adds 17 built-in themes, translates the UI into French, and shows **only the `Music` folder at the SD root** (it is created automatically on first boot; put your Artist → Album → Track tree inside it). Also adds a cover on/off setting and 4 Now Playing visualizer styles.
 
 
 <p float="left">
@@ -38,26 +38,26 @@ A themeable MP3 / FLAC / WAV / AAC player firmware for the [M5Stack Cardputer AD
 - M5Stack Cardputer ADV (ESP32-S3, no PSRAM).
 - A microSD card for your music (and optionally custom themes — see below).
 
-## Flashing the prebuilt firmware
+## Flashing the prebuilt firmware (Ember+)
 
-`ember-themes.bin` (repo root) is a **merged image** — bootloader, partition
+`EmberPlus.bin` (repo root) is a **merged image** — bootloader, partition
 table, and app in one file — flashable as-is at address `0x0`:
 
 ```bash
-esptool.py --port COMx write_flash 0x0 ember-themes.bin
+esptool.py --port COMx write_flash 0x0 EmberPlus.bin
 ```
 
 No-command-line option: open <https://espressif.github.io/esp-launchpad/> in a
 Chromium browser, pick ESP32-S3, address `0x0`, and paste the raw file URL
-(`https://raw.githubusercontent.com/<your-account>/EMBER/main/ember-themes.bin`)
+(`https://raw.githubusercontent.com/<your-account>/EMBER/main/EmberPlus.bin`)
 or select the downloaded file.
 
 The GitHub Actions build (every push and pull request) compiles the firmware,
 merges bootloader + partition table + app with esptool, and publishes the
 result as a downloadable artifact; every `v*` tag additionally creates a
 **Release** with the `.bin` attached. Note: `ember-cardputer-adv.bin` at the
-repo root is the ORIGINAL upstream EMBER firmware (no added themes) — flash
-`ember-themes.bin` for the Tokyo Night / Dracula / Gruvbox / Catppuccin build.
+repo root is the ORIGINAL upstream EMBER firmware (no additions) — flash
+`EmberPlus.bin` for the full Ember+ build.
 
 ## Controls
 

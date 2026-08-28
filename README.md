@@ -93,15 +93,6 @@ Remote albums play sequentially (the end-of-album setting applies to the SD libr
 
 If a file is missing or empty, the firmware falls back to the hardcoded values at the bottom of `src/network.h` (recompile needed). WiFi connects on demand (first `w` press) and is turned off when you leave the network player — SD playback and boot behavior are untouched. Authentication uses the Subsonic token scheme (`md5(password + salt)`), so the password itself never travels over the network.
 
-## Custom themes
-
-Every color in the UI — backgrounds, text, selection highlight, visualizer tiers, all of it — comes from one theme struct, editable without touching any drawing code.
-
-**Make your own:** open the [theme editor](https://horseyofcoursey.github.io/EMBER/tools/theme-editor.html) in a browser. It shows a live, device-accurate preview (colors are quantized to the Cardputer's actual 16-bit display depth, so what you see is what you'll get) of the browser, Now Playing, and visualizer screens as you tweak each color.
-
-**Use it on your device (no recompiling):** on the JSON tab, click **Download**, then copy the file into a `/themes` folder on your SD card. After a reboot, it shows up as an extra option under **Settings → Theme**.
-
-The editor also works completely offline as a local file (`tools/theme-editor.html`) if you'd rather not use the hosted copy.
 
 ## Credit
 Thank you to the creators of the following repositories (in no particular order) that inspired this project and provided a code base to start.

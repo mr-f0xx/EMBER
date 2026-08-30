@@ -5,8 +5,8 @@
     Talks to a Subsonic-compatible server (Gonic, Navidrome, Airsonic...):
       - WiFi from /wifi.txt on the SD card (or hardcoded fallback below)
       - server from /subsonic.txt : URL, username, password (3 lines)
-      - artists -> albums -> songs browsing via the Subsonic API
-        (getIndexes / getArtist / getAlbum, XML, token auth md5(pass+salt))
+      - artists -> albums -> songs browsing via the Subsonic ID3 API
+        (getArtists / getArtist / getAlbum, XML, token auth md5(pass+salt))
       - playback via stream.view with HTTP Range (AudioFileSourceHTTPRange)
 
     The audio pipeline itself stays in main.cpp (playNetSong etc.); this

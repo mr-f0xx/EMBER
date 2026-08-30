@@ -357,7 +357,13 @@ static bool pingServer() {
 static bool loadArtists() {
     if (!allocLists()) return false;
     String body;
-    int code = httpGetText(endpoint("getIndexes.view"), body);
+    // getIndexes.view (folder-based browsing) returns artist ids from a
+    // *different* namespace than getArtist.view (ID3-based) expects -- an id
+    // from here fed into getArtist.view fails with "couldn't find an artist
+    // with that id" even though it looks valid. getArtists.view (plural) is
+    // the ID3-based artist list and its ids are what getArtist.view actually
+    // wants, so use that instead.
+    int code = httpGetText(endpoint("getArtists.view"), body);
     if (code != HTTP_CODE_OK) return false;
     int n = xmlCount(body, "artist");
     char id[NET_ID_MAX], name[NET_NAME_MAX];
